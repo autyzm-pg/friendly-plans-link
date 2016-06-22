@@ -20,6 +20,14 @@
         <maven.compiler.testSource>${project.build.jdk.ver}</maven.compiler.testSource>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+    </dependencies>
+
     <modules>
         <module>backupper-api</module>
         <module>backupper-core</module>
