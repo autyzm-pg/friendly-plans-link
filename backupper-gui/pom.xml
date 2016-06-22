@@ -12,4 +12,12 @@
     <packaging>jar</packaging>
 
     <name>backupper-api</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>pl.gda.pg.eti.autyzm</groupId>
+            <artifactId>backupper-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
