@@ -1,6 +1,8 @@
 package pl.gda.pg.eti.autyzm;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,9 +17,9 @@ import java.net.URL;
  */
 public class App extends Application
 {
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
         primaryStage.setTitle("Plan Link");
         primaryStage.setScene(new Scene(root, Config.SCENE_WIDTH, Config.SCENE_HEIGHT));
@@ -27,4 +29,5 @@ public class App extends Application
     public static void main( String[] args ) {
         launch(args);
     }
+
 }

@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
+<?import java.net.URL?>
 <BorderPane id="root" fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="pl.gda.pg.eti.autyzm.MainController">
     <center>
@@ -17,8 +18,8 @@
                     <content>
 
                         <GridPane hgap="5" vgap="5">
-                            <Label text="Nazwa kopi" GridPane.columnIndex="1" GridPane.rowIndex="1"/> <TextField fx:id="nameInput"
-                                       GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                            <Label text="Nazwa kopi" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            <TextField fx:id="nameInput" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                             <Label fx:id="directoryDownloadInputLabel" text="Brak wybranego urządzenia"
                                        GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                             <Button fx:id="chooseDeviceButton" GridPane.columnIndex="2" GridPane.rowIndex="2"
@@ -30,29 +31,39 @@
                 </Tab>
                 <Tab text="Refresh" closable="false">
                     <content>
-                        <GridPane hgap="2" vgap="2">
-                            <Button fx:id="chooseDeviceToRefreshButton" GridPane.columnIndex="1" GridPane.rowIndex="2"
-                                    text="Wybierz urządzenie" onAction="#chooseDeviceToRefresh"/>
+                        <BorderPane>
+                            <top>
+                                <HBox>
+                                    <Button fx:id="chooseDeviceToRefreshButton"
+                                            text="Wybierz urządzenie" onAction="#chooseDeviceToRefresh"/>
 
-                            <Label fx:id="directoryRefreshInputLabel" text="Brak wybranego urządzenia"
-                                   GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-
-                            <TableView fx:id="tableView" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                <columns>
-                                    <TableColumn text="Nazwa">
-                                    </TableColumn>
-                                    <TableColumn text="Data utworzenia">
-                                    </TableColumn>
-                                </columns>
-                            </TableView>
-
-                            <Button fx:id="refreshButton" GridPane.columnIndex="1" GridPane.rowIndex="4"
-                                    text="Wyślij bazę" onAction="#refresh"/>
-
-                        </GridPane>
+                                    <Label fx:id="directoryRefreshInputLabel" text="Brak wybranego urządzenia"
+                                       />
+                                </HBox>
+                            </top>
+                            <center>
+                                <TableView fx:id="tableView" >
+                                    <columns>
+                                        <TableColumn text="Nazwa"  fx:id="name">
+                                        </TableColumn>
+                                        <TableColumn text="Data utworzenia"  fx:id="timestamp">
+                                        </TableColumn>
+                                    </columns>
+                                </TableView>
+                            </center>
+                            <bottom>
+                                <Button fx:id="refreshButton"
+                                        text="Wyślij bazę" onAction="#refresh"/>
+                            </bottom>
+                        </BorderPane>
                     </content>
                 </Tab>
             </tabs>
         </TabPane>
     </center>
+
+    <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
+
 </BorderPane>
