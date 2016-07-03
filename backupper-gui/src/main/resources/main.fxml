@@ -9,52 +9,78 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import java.net.URL?>
-<BorderPane id="root" fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
+<?import pl.gda.pg.eti.autyzm.StringConfig?>
+
+<BorderPane styleClass="root" id="root" fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="pl.gda.pg.eti.autyzm.MainController">
     <center>
         <TabPane>
             <tabs>
-                <Tab text="Download" closable="false">
+                <Tab closable="false">
+                    <text>
+                        <StringConfig fx:constant="MAKE_COPY"/>
+                    </text>
                     <content>
-
-                        <GridPane hgap="5" vgap="5">
-                            <Label text="Nazwa kopi" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                            <TextField fx:id="nameInput" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                            <Label fx:id="directoryDownloadInputLabel" text="Brak wybranego urządzenia"
-                                       GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                            <Button fx:id="chooseDeviceButton" GridPane.columnIndex="2" GridPane.rowIndex="2"
-                                    text="Wybierz urządzenie" onAction="#chooseDeviceToDownload"/>
-                            <Button fx:id="downloadButton" GridPane.columnIndex="1"
-                                    GridPane.rowIndex="4" text="Pobierz" onAction="#download"/>
-                        </GridPane>
+                        <VBox styleClass="copyTab">
+                            <VBox styleClass="copyNameInputArea">
+                                <Label>
+                                    <StringConfig fx:constant="COPY_INPUT_NAME_LABEL"/>
+                                </Label>
+                                <TextField fx:id="nameInput"/>
+                            </VBox>
+                            <HBox styleClass="chooseDeviceArea">
+                                <Button onAction="#chooseDeviceToDownload">
+                                    <StringConfig fx:constant="CHOOSE_DEVICE"/>
+                                </Button>
+                                <Label fx:id="directoryDownloadInputLabel"
+                                       styleClass="chooseDeviceLabel">
+                                    <StringConfig fx:constant="NO_CHOSEN_DEVICE"/>
+                                </Label>
+                            </HBox>
+                            <HBox styleClass="downloadCopyButtonArea">
+                                <Button styleClass="downloadCopyButton" onAction="#download">
+                                    <StringConfig fx:constant="MAKE_COPY"/>
+                                </Button>
+                            </HBox>
+                        </VBox>
                     </content>
-                </Tab>
-                <Tab text="Refresh" closable="false">
-                    <content>
-                        <BorderPane>
-                            <top>
-                                <HBox>
-                                    <Button fx:id="chooseDeviceToRefreshButton"
-                                            text="Wybierz urządzenie" onAction="#chooseDeviceToRefresh"/>
 
-                                    <Label fx:id="directoryRefreshInputLabel" text="Brak wybranego urządzenia"
-                                       />
+                </Tab>
+                <Tab closable="false">
+                    <text>
+                        <StringConfig fx:constant="REFRESH_COPY"/>
+                    </text>
+                    <content>
+                        <BorderPane styleClass="refreshTab">
+                            <top>
+                                <HBox styleClass="chooseDeviceArea">
+                                    <Button onAction="#chooseDeviceToRefresh">
+                                        <StringConfig fx:constant="CHOOSE_DEVICE"/>
+                                    </Button>
+                                    <Label fx:id="directoryRefreshLabel" styleClass="chooseDeviceLabel">
+                                        <StringConfig fx:constant="NO_CHOSEN_DEVICE"/>
+                                    </Label>
                                 </HBox>
                             </top>
                             <center>
-                                <TableView fx:id="tableView" >
+                                <TableView fx:id="tableView">
                                     <columns>
-                                        <TableColumn text="Nazwa"  fx:id="name">
+                                        <TableColumn fx:id="name">
+                                            <text>
+                                             <StringConfig fx:constant="NAME_COLUMN"/>
+                                            </text>
                                         </TableColumn>
-                                        <TableColumn text="Data utworzenia"  fx:id="timestamp">
+                                        <TableColumn  fx:id="createDate">
+                                            <text>
+                                                <StringConfig fx:constant="CREATE_DATE_COLUMN"/>
+                                            </text>
+                                        </TableColumn>
+                                        <TableColumn fx:id="refreshCopyAction" styleClass="refreshActionColumn"
+                                                     sortable="false">
                                         </TableColumn>
                                     </columns>
                                 </TableView>
                             </center>
-                            <bottom>
-                                <Button fx:id="refreshButton"
-                                        text="Wyślij bazę" onAction="#refresh"/>
-                            </bottom>
                         </BorderPane>
                     </content>
                 </Tab>
