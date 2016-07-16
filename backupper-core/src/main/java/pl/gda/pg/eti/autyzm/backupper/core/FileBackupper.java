@@ -12,9 +12,12 @@ import java.io.*;
  * Created by superuser on 22-Jun-16.
  */
 public class FileBackupper implements Backupper {
+
+    private static final File DATAFOLDER = new File("data");
+    private static final byte[] BUFFSIZE = new byte[4096];
+
     @Override public void makeBackup(String backupName, URI pathToDevice)
         throws BackupperException {
-
     }
 
     @Override public List<Backup> getBackups() throws BackupperException {
@@ -24,19 +27,13 @@ public class FileBackupper implements Backupper {
     @Override public Optional<Backup> getBackup(String backupName) throws BackupperException {
         return null;
     }
-    public static void createFolder(String backUpName) throws IOException {
-        File dataFolder = new File("data");
-        if (!dataFolder.exists()) {
-            dataFolder.mkdir();
+    private static void createFolder(String backUpName) throws IOException {
+        if (!DATAFOLDER.exists()) {
+            DATAFOLDER.mkdir();
         }
         File fullPath = new File("data" + File.separator + backUpName);
         if (!fullPath.exists()) {
-            if (fullPath.mkdir()) {
-                System.out.println("Directory: "
-                        + backUpName + " created");
-            }
-        } else {
-            System.out.println("Failed to create directory!");
+            fullPath.mkdir();
         }
     }
 
@@ -56,18 +53,14 @@ public class FileBackupper implements Backupper {
         try {
             input = new FileInputStream(sourceFile);
             output = new FileOutputStream(fullPath);
-            byte[] buf = new byte[4096];
+
             int bytesRead;
-            while ((bytesRead = input.read(buf)) > 0) {
-                output.write(buf, 0, bytesRead);
+            while ((bytesRead = input.read(BUFFSIZE)) > 0) {
+                output.write(BUFFSIZE, 0, bytesRead);
             }
         } finally {
             input.close();
             output.close();
         }
-
-
     }
-
-
 }
