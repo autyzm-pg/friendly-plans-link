@@ -13,8 +13,8 @@ import java.io.*;
  */
 public class FileBackupper implements Backupper {
 
-    private static final File DATAFOLDER = new File("data");
-    private static final byte[] BUFFSIZE = new byte[4096];
+    private static final File DATA_FOLDER = new File("data");
+    private static final int BUFF_SIZE = 4096;
 
     @Override public void makeBackup(String backupName, URI pathToDevice)
         throws BackupperException {
@@ -28,8 +28,8 @@ public class FileBackupper implements Backupper {
         return null;
     }
     private static void createFolder(String backUpName) throws IOException {
-        if (!DATAFOLDER.exists()) {
-            DATAFOLDER.mkdir();
+        if (!DATA_FOLDER.exists()) {
+            DATA_FOLDER.mkdir();
         }
         File fullPath = new File("data" + File.separator + backUpName);
         if (!fullPath.exists()) {
@@ -54,9 +54,10 @@ public class FileBackupper implements Backupper {
             input = new FileInputStream(sourceFile);
             output = new FileOutputStream(fullPath);
 
+            byte[] buf = new byte[BUFF_SIZE];
             int bytesRead;
-            while ((bytesRead = input.read(BUFFSIZE)) > 0) {
-                output.write(BUFFSIZE, 0, bytesRead);
+            while ((bytesRead = input.read(buf)) > 0) {
+                output.write(buf, 0, bytesRead);
             }
         } finally {
             input.close();
