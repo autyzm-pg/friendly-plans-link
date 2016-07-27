@@ -1,5 +1,5 @@
 # **Friendly Plan Link**
-[![Build Status](https://travis-ci.org/autyzm-pg/friendly-plans-link.svg?branch=travis_configuration)](https://travis-ci.org/autyzm-pg/friendly-plans-link)
+[![Build Status](https://travis-ci.org/autyzm-pg/friendly-plans-link.svg?branch=master)](https://travis-ci.org/autyzm-pg/friendly-plans-link)
 
 Application to connect [Friendly Plan](http://autyzm.eti.pg.gda.pl/przyjaznyplan/) ([Github](https://github.com/autyzm-pg/friendly-plans)) with computer.
 
