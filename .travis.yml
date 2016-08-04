@@ -1,4 +1,11 @@
 language: java
+
 jdk:
   - oraclejdk8
-script: mvn test -e
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
