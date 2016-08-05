@@ -5,18 +5,37 @@ import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.api.BackupperException;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
-/**
- * Created by superuser on 22-Jun-16.
- */
 public class FileBackupper implements Backupper {
+    private static final File DATA_FOLDER = new File("data");
+    private static final int BUFF_SIZE = 4096;
+
+    {
+        if (!DATA_FOLDER.exists())
+            DATA_FOLDER.mkdir();
+    }
+
     private static final String ACTIVITY_TABLE_NAME = "AKTYWNOSC";
     private static final String[] ACTIVITY_COLUMN_NAMES = {"ICONPATH", "AUDIOPATH"};
 
@@ -34,16 +53,47 @@ public class FileBackupper implements Backupper {
         }
     }
 
-    @Override public void makeBackup(String backupName, URI pathToDevice)
-        throws BackupperException {
+    @Override
+    public void makeBackup(String backupName, URI pathToDevice) throws BackupperException {
     }
 
-    @Override public List<Backup> getBackups() throws BackupperException {
+    @Override
+    public List<Backup> getBackups() throws BackupperException {
         return null;
     }
 
-    @Override public Optional<Backup> getBackup(String backupName) throws BackupperException {
+    @Override
+    public Optional<Backup> getBackup(String backupName) throws BackupperException {
         return null;
+    }
+
+    private void createBackupFolder(String backupName) throws IOException {
+        File fullPath = new File(DATA_FOLDER, backupName);
+
+        if (!fullPath.exists())
+            fullPath.mkdir();
+    }
+
+    public void copyFromDevice(String copyFrom, String backupName) throws IOException {
+        File sourceFile = new File(copyFrom);
+
+        if (!sourceFile.exists()) {
+            throw new IllegalArgumentException("File not found " + copyFrom);
+        } else if (!sourceFile.isFile()) {
+            throw new IllegalArgumentException(copyFrom + " is not a file.");
+        }
+
+        File fullPath = new File(DATA_FOLDER, backupName + File.separator + sourceFile.getName());
+
+        try (InputStream input = new FileInputStream(sourceFile)) {
+            try (OutputStream output = new FileOutputStream(fullPath)) {
+                byte[] buf = new byte[BUFF_SIZE];
+                int bytesRead;
+                while ((bytesRead = input.read(buf)) > 0) {
+                    output.write(buf, 0, bytesRead);
+                }
+            }
+        }
     }
 
     private List<URI> extractMediaURI(File dbFile) throws SQLException, URISyntaxException {
@@ -59,8 +109,8 @@ public class FileBackupper implements Backupper {
         Collection<URI> settingsMedia = getSettingsMedia(dbFile);
 
         return Stream.of(activityMedia, actionMedia, settingsMedia)
-                     .flatMap(Collection::stream)
-                     .collect(Collectors.toList());
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     private Collection<URI> getActivityMedia(File dbFile) throws SQLException, URISyntaxException {
@@ -76,7 +126,7 @@ public class FileBackupper implements Backupper {
     }
 
     private Collection<URI> extractPaths(File dbFile, String tableName, String... sourceColumns)
-        throws SQLException, URISyntaxException {
+            throws SQLException, URISyntaxException {
         Collection<URI> paths = new LinkedList<>();
 
         String dbFilePath = dbFile.getAbsolutePath();
@@ -102,6 +152,6 @@ public class FileBackupper implements Backupper {
 
     private String clearAndroidPath(String path) {
         return path.replaceFirst("/storage/emulated/0", "")
-                   .replaceFirst("/storage/emulated/legacy", "");
+                .replaceFirst("/storage/emulated/legacy", "");
     }
 }
