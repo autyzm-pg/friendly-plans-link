@@ -3,24 +3,35 @@ package pl.gda.pg.eti.autyzm.backupper.core;
 import pl.gda.pg.eti.autyzm.backupper.api.Backup;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.api.BackupperException;
+import se.vidstige.jadb.JadbConnection;
+import se.vidstige.jadb.JadbDevice;
+import se.vidstige.jadb.JadbException;
+import se.vidstige.jadb.RemoteFile;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
 public class FileBackupper implements Backupper {
     private static final File DATA_FOLDER = new File("data");
-    private static final int BUFF_SIZE = 4096;
 
     {
         if (!DATA_FOLDER.exists())
             DATA_FOLDER.mkdir();
+    }
+
+    private final JadbConnection adbConnection;
+
+    public FileBackupper() {
+        try {
+            this.adbConnection = new JadbConnection();
+        } catch (IOException e) {
+            throw new BackupperException("Failed to initialize ADB connection to localhost", e);
+        }
     }
 
     @Override
@@ -37,32 +48,43 @@ public class FileBackupper implements Backupper {
         return null;
     }
 
+    /**
+     * Creates new backup folder in {@link FileBackupper#DATA_FOLDER}.
+     * @param backupName
+     * @throws IOException
+     */
     private void createBackupFolder(String backupName) throws IOException {
-        File fullPath = new File(DATA_FOLDER, backupName);
-
-        if (!fullPath.exists())
-            fullPath.mkdir();
+        new File(DATA_FOLDER, backupName).mkdir();
     }
 
-    public void copyFromDevice(String copyFrom, String backupName) throws IOException {
-        File sourceFile = new File(copyFrom);
 
-        if (!sourceFile.exists()) {
-            throw new IllegalArgumentException("File not found " + copyFrom);
-        } else if (!sourceFile.isFile()) {
-            throw new IllegalArgumentException(copyFrom + " is not a file.");
-        }
+    /**
+     * Retrieves a list of connection ADB devices
+     * @return
+     * @throws IOException
+     * @throws JadbException
+     */
+    private List<JadbDevice> getConnectedDevices() throws IOException, JadbException {
+        return adbConnection.getDevices();
+    }
 
-        File fullPath = new File(DATA_FOLDER, backupName + File.separator + sourceFile.getName());
-
-        try (InputStream input = new FileInputStream(sourceFile)) {
-            try (OutputStream output = new FileOutputStream(fullPath)) {
-                byte[] buf = new byte[BUFF_SIZE];
-                int bytesRead;
-                while ((bytesRead = input.read(buf)) > 0) {
-                    output.write(buf, 0, bytesRead);
-                }
-            }
+    /**
+     * Copies file from specified device via ADB
+     *
+     * @param device adb-enabled device to copy from
+     * @param copyFrom source file patch
+     * @param backupName destination backup name
+     * @throws IOException if method fails to copy file
+     */
+    private void copyFromDevice(JadbDevice device, String copyFrom, String backupName) throws IOException {
+        try {
+            String copyFromFileName = Paths.get(new URI(copyFrom).getPath()).getFileName().toString();
+            File fullPath = new File(DATA_FOLDER, backupName + File.separator + copyFromFileName);
+            device.pull(new RemoteFile(copyFrom), fullPath);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Bad copyFrom path", e);
+        } catch (JadbException e) {
+            throw new IOException("Failed to pull file from device", e);
         }
     }
 }

@@ -19,5 +19,9 @@
             <artifactId>backupper-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.vidstige</groupId>
+            <artifactId>jadb</artifactId>
+        </dependency>
     </dependencies>
 </project>
