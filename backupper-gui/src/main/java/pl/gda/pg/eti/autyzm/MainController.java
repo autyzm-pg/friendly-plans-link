@@ -11,13 +11,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
+import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
+import pl.gda.pg.eti.autyzm.backupper.core.FileBackupper;
+import se.vidstige.jadb.JadbDevice;
+import se.vidstige.jadb.JadbException;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by Gosia on 2016-06-22.
- */
 public class MainController {
 
     @FXML private BorderPane root;
@@ -27,7 +32,6 @@ public class MainController {
     @FXML public Label directoryRefreshLabel;
     @FXML private Label directoryDownloadInputLabel;
     private String directoryRefreshPath = null;
-    private String directoryDownloadPath = null;
 
     @FXML private TableView<DeviceCopy> tableView;
     @FXML private TableColumn<DeviceCopy, String> name;
@@ -35,20 +39,28 @@ public class MainController {
     @FXML private TableColumn<DeviceCopy, Boolean> refreshCopyAction;
     private ObservableList<DeviceCopy> deviceCopyData = FXCollections.observableArrayList();
 
+    private Backupper backupper = new FileBackupper();
+    private JadbDevice selectedDevice;
+
 
     @FXML
     public void initialize() {
         setTableColumnDataBindings();
         setTableColumnWidth();
         tableView.setItems(deviceCopyData);
+        initAdbConnection();
     }
 
     @FXML
     public void chooseDeviceToDownload(ActionEvent actionEvent) {
-        File chosenDirectory = showDirectoryChooserDialog(StringConfig.CHOOSE_DEVICE_TO_DOWNLOAD);
-        if(chosenDirectory != null) {
-            directoryDownloadPath = chosenDirectory.getAbsolutePath();
-            directoryDownloadInputLabel.setText(chosenDirectory.getAbsolutePath());
+        List<JadbDevice> devices = getConnectedDevices();
+
+        if(!devices.isEmpty()) {
+            selectedDevice = showAdbDeviceChooserDialog(devices);
+            directoryDownloadInputLabel.setText(selectedDevice.getSerial());
+        } else {
+            showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
+                    null, Alert.AlertType.WARNING);
         }
     }
 
@@ -64,8 +76,8 @@ public class MainController {
     @FXML
     public void download(ActionEvent actionEvent) {
         String name = nameInput.getText();
-        if(name != null && !name.equals("") && directoryDownloadPath != null) {
-            //download
+        if(name != null && !name.equals("") && selectedDevice != null) {
+            backupper.makeBackup(name, selectedDevice);
             nameInput.clear();
             deviceCopyData.add(new DeviceCopy(name, LocalDate.now()));
             showAlert(StringConfig.COPY_CREATED_ALERT_TITLE, StringConfig.COPY_CREATED_ALERT_BODY,
@@ -76,6 +88,16 @@ public class MainController {
                     null, Alert.AlertType.WARNING);
         }
 
+    }
+
+    private void initAdbConnection() {
+        try {
+            AdbProxy.initAdbConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(StringConfig.FAILED_TO_INIT_ADB_CONNECTION_TITLE, StringConfig.FAILED_TO_INIT_ADB_CONNECTION_BODY,
+                    null, Alert.AlertType.ERROR);
+        }
     }
 
     private void setTableColumnDataBindings() {
@@ -106,6 +128,21 @@ public class MainController {
         directoryChooser.setTitle(dialogTitle);
         Stage stage = (Stage) root.getScene().getWindow();
         return directoryChooser.showDialog(stage);
+    }
+
+    private List<JadbDevice> getConnectedDevices() {
+        try {
+            return AdbProxy.getConnectedDevices();
+        } catch (IOException | JadbException e) {
+            showAlert(StringConfig.LOOKING_FOR_DEVICES_ERROR_TITLE, StringConfig.LOOKING_FOR_DEVICES_ERROR_BODY,
+                    null, Alert.AlertType.ERROR);
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    private JadbDevice showAdbDeviceChooserDialog(List<JadbDevice> connectedDevices) {
+        return connectedDevices.get(0);
     }
 
     private class RefreshButtonCell extends TableCell<DeviceCopy, Boolean> {

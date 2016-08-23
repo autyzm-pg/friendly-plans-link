@@ -3,7 +3,6 @@ package pl.gda.pg.eti.autyzm.backupper.core;
 import pl.gda.pg.eti.autyzm.backupper.api.Backup;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.api.BackupperException;
-import se.vidstige.jadb.JadbConnection;
 import se.vidstige.jadb.JadbDevice;
 import se.vidstige.jadb.JadbException;
 import se.vidstige.jadb.RemoteFile;
@@ -19,23 +18,23 @@ import java.util.Optional;
 public class FileBackupper implements Backupper {
     private static final File DATA_FOLDER = new File("data");
 
-    {
+    static {
         if (!DATA_FOLDER.exists())
             DATA_FOLDER.mkdir();
     }
 
-    private final JadbConnection adbConnection;
+    private final String PATH_TO_DB =  "/storage/sdcard0/commments2.db";
 
-    public FileBackupper() {
-        try {
-            this.adbConnection = new JadbConnection();
-        } catch (IOException e) {
-            throw new BackupperException("Failed to initialize ADB connection to localhost", e);
-        }
-    }
 
     @Override
-    public void makeBackup(String backupName, URI pathToDevice) throws BackupperException {
+    public void makeBackup(String backupName, JadbDevice device) throws BackupperException {
+        try {
+            createBackupFolder(backupName);
+            copyFromDevice(device, PATH_TO_DB, backupName);
+        } catch (IOException e) {
+            throw new BackupperException(e);
+        }
+
     }
 
     @Override
@@ -50,23 +49,13 @@ public class FileBackupper implements Backupper {
 
     /**
      * Creates new backup folder in {@link FileBackupper#DATA_FOLDER}.
-     * @param backupName
+     * @param backupName name of backup directory - alias for backup
      * @throws IOException
      */
     private void createBackupFolder(String backupName) throws IOException {
         new File(DATA_FOLDER, backupName).mkdir();
     }
 
-
-    /**
-     * Retrieves a list of connection ADB devices
-     * @return
-     * @throws IOException
-     * @throws JadbException
-     */
-    private List<JadbDevice> getConnectedDevices() throws IOException, JadbException {
-        return adbConnection.getDevices();
-    }
 
     /**
      * Copies file from specified device via ADB

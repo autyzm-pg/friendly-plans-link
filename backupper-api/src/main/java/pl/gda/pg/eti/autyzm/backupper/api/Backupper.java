@@ -1,14 +1,12 @@
 package pl.gda.pg.eti.autyzm.backupper.api;
 
-import java.net.URI;
+import se.vidstige.jadb.JadbDevice;
+
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Created by superuser on 22-Jun-16.
- */
 public interface Backupper {
-    void makeBackup(String backupName, URI pathToDevice) throws BackupperException;
+    void makeBackup(String backupName, JadbDevice device) throws BackupperException;
     List<Backup> getBackups() throws BackupperException;
     Optional<Backup> getBackup(String backupName) throws BackupperException;
 }
