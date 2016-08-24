@@ -19,5 +19,10 @@
             <artifactId>backupper-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>pl.gda.pg.eti.autyzm</groupId>
+            <artifactId>backupper-core</artifactId>
+            <version>0.1</version>
+        </dependency>
     </dependencies>
 </project>

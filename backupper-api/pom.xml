@@ -2,6 +2,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.vidstige</groupId>
+            <artifactId>jadb</artifactId>
+            <version>master-v1.0-gf362563-41</version>
+        </dependency>
+    </dependencies>
     <parent>
         <groupId>pl.gda.pg.eti.autyzm</groupId>
         <artifactId>backupper-root</artifactId>
