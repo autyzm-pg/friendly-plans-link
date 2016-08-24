@@ -12,8 +12,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
+import pl.gda.pg.eti.autyzm.backupper.api.Restorer;
 import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
 import pl.gda.pg.eti.autyzm.backupper.core.FileBackupper;
+import pl.gda.pg.eti.autyzm.backupper.core.FileRestorer;
 import se.vidstige.jadb.JadbDevice;
 import se.vidstige.jadb.JadbException;
 
@@ -151,12 +153,17 @@ public class MainController {
         RefreshButtonCell(){
 
             refreshButton.setOnAction(action -> {
-                if(directoryRefreshPath != null) {
+
+                if(selectedDevice != null) {
+                    String backupName = deviceCopyData.get(this.getIndex()).getName();
+                    Restorer restorer = new FileRestorer();
+                    restorer.restoreBackupToDevice(backupName, selectedDevice);
                     showAlert(StringConfig.COPY_REFRESHED_ALERT_TITLE, StringConfig.COPY_REFRESHED_ALERT_BODY,
                             null, Alert.AlertType.INFORMATION);
                     //refresh
                 }
                 else{
+
                     showAlert(StringConfig.COPY_MISSING_FIELDS_ALERT_TITLE, StringConfig.COPY_MISSING_FIELDS_ALERT_BODY,
                             null, Alert.AlertType.WARNING);
                 }

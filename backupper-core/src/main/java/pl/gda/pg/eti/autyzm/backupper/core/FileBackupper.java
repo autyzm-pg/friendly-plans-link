@@ -47,6 +47,10 @@ public class FileBackupper implements Backupper {
         return null;
     }
 
+    public static File getBackupDatabase(String backupName) {
+        return new File(DATA_FOLDER, backupName + File.separator + "comments2.db");
+    }
+
     /**
      * Creates new backup folder in {@link FileBackupper#DATA_FOLDER}.
      * @param backupName name of backup directory - alias for backup
