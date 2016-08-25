@@ -28,20 +28,24 @@
                                 </Label>
                                 <TextField fx:id="nameInput"/>
                             </VBox>
-                            <HBox styleClass="chooseDeviceArea">
-                                <Button onAction="#chooseDeviceToDownload">
-                                    <StringConfig fx:constant="CHOOSE_DEVICE"/>
+                            <VBox>
+                                <Button onAction="#refreshDeviceList">
+                                    <StringConfig fx:constant="REFRESH_DEVICE_BUTTON"/>
                                 </Button>
-                                <Label fx:id="directoryDownloadInputLabel"
-                                       styleClass="chooseDeviceLabel">
-                                    <StringConfig fx:constant="NO_CHOSEN_DEVICE"/>
-                                </Label>
-                            </HBox>
-                            <HBox styleClass="downloadCopyButtonArea">
-                                <Button styleClass="downloadCopyButton" onAction="#download">
-                                    <StringConfig fx:constant="MAKE_COPY"/>
-                                </Button>
-                            </HBox>
+                                <HBox styleClass="chooseDeviceArea">
+                                    <TableView fx:id="deviceTableView">
+                                        <columns>
+                                            <TableColumn fx:id="device">
+                                                <text>
+                                                    <StringConfig fx:constant="DEVICE_COLUMN"/>
+                                                </text>
+                                            </TableColumn>
+                                            <TableColumn fx:id="chooseDevice" sortable="false">
+                                            </TableColumn>
+                                        </columns>
+                                    </TableView>
+                                </HBox>
+                            </VBox>
                         </VBox>
                     </content>
 

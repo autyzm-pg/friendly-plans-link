@@ -1,6 +1,8 @@
 package pl.gda.pg.eti.autyzm;
 
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,34 +32,46 @@ public class MainController {
     @FXML private TextField nameInput;
 
     @FXML public Label directoryRefreshLabel;
-    @FXML private Label directoryDownloadInputLabel;
     private String directoryRefreshPath = null;
 
     @FXML private TableView<DeviceCopy> tableView;
     @FXML private TableColumn<DeviceCopy, String> name;
     @FXML private TableColumn<DeviceCopy, String> createDate;
     @FXML private TableColumn<DeviceCopy, Boolean> refreshCopyAction;
+
+    @FXML private TableView<JadbDevice> deviceTableView;
+    @FXML private TableColumn<JadbDevice, String> device;
+    @FXML private TableColumn<JadbDevice, Boolean> chooseDevice;
+
     private ObservableList<DeviceCopy> deviceCopyData = FXCollections.observableArrayList();
+    private ObservableList<JadbDevice> availableDevices = FXCollections.observableArrayList();
 
     private Backupper backupper = new FileBackupper();
-    private JadbDevice selectedDevice;
-
 
     @FXML
     public void initialize() {
+        setDeviceTableColumnDataBindings();
         setTableColumnDataBindings();
         setTableColumnWidth();
+        setDeviceTableColumnWidth();
         tableView.setItems(deviceCopyData);
+        deviceTableView.setItems(availableDevices);
+
         initAdbConnection();
+        showConnectedDevices();
     }
 
     @FXML
-    public void chooseDeviceToDownload(ActionEvent actionEvent) {
-        List<JadbDevice> devices = getConnectedDevices();
+    public void refreshDeviceList(ActionEvent actionEvent) {
+        showConnectedDevices();
+    }
+
+    private void showConnectedDevices() {
+        List devices = getConnectedDevices();
 
         if(!devices.isEmpty()) {
-            selectedDevice = showAdbDeviceChooserDialog(devices);
-            directoryDownloadInputLabel.setText(selectedDevice.getSerial());
+              availableDevices.clear();
+              availableDevices.addAll(devices);
         } else {
             showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
                     null, Alert.AlertType.WARNING);
@@ -73,23 +87,6 @@ public class MainController {
         }
     }
 
-    @FXML
-    public void download(ActionEvent actionEvent) {
-        String name = nameInput.getText();
-        if(name != null && !name.equals("") && selectedDevice != null) {
-            backupper.makeBackup(name, selectedDevice);
-            nameInput.clear();
-            deviceCopyData.add(new DeviceCopy(name, LocalDate.now()));
-            showAlert(StringConfig.COPY_CREATED_ALERT_TITLE, StringConfig.COPY_CREATED_ALERT_BODY,
-                    null, Alert.AlertType.INFORMATION);
-        }
-        else{
-            showAlert(StringConfig.COPY_MISSING_FIELDS_ALERT_TITLE, StringConfig.COPY_MISSING_FIELDS_ALERT_BODY,
-                    null, Alert.AlertType.WARNING);
-        }
-
-    }
-
     private void initAdbConnection() {
         try {
             AdbProxy.initAdbConnection();
@@ -100,6 +97,13 @@ public class MainController {
         }
     }
 
+    private void setDeviceTableColumnDataBindings(){
+        device.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
+        chooseDevice.setCellValueFactory(
+                cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
+        chooseDevice.setCellFactory(
+                cellData -> new MakeCopyButtonCell());
+    }
     private void setTableColumnDataBindings() {
         name.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         createDate.setCellValueFactory(cellData -> cellData.getValue().getCreateDateProperty());
@@ -108,11 +112,14 @@ public class MainController {
         refreshCopyAction.setCellFactory(
                 cellData -> new RefreshButtonCell());
     }
-
     private void setTableColumnWidth() {
         name.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
         createDate.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
         refreshCopyAction.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+    }
+    private void setDeviceTableColumnWidth() {
+        device.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
+        chooseDevice.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
     }
 
     private void showAlert(String title, String contentText, String headerText, Alert.AlertType alertType) {
@@ -141,10 +148,6 @@ public class MainController {
         }
     }
 
-    private JadbDevice showAdbDeviceChooserDialog(List<JadbDevice> connectedDevices) {
-        return connectedDevices.get(0);
-    }
-
     private class RefreshButtonCell extends TableCell<DeviceCopy, Boolean> {
         final Button refreshButton = new Button(StringConfig.REFRESH_BUTTON);
 
@@ -154,10 +157,11 @@ public class MainController {
                 if(directoryRefreshPath != null) {
                     showAlert(StringConfig.COPY_REFRESHED_ALERT_TITLE, StringConfig.COPY_REFRESHED_ALERT_BODY,
                             null, Alert.AlertType.INFORMATION);
+
                     //refresh
                 }
                 else{
-                    showAlert(StringConfig.COPY_MISSING_FIELDS_ALERT_TITLE, StringConfig.COPY_MISSING_FIELDS_ALERT_BODY,
+                    showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
                             null, Alert.AlertType.WARNING);
                 }
             });
@@ -168,6 +172,35 @@ public class MainController {
             super.updateItem(t, empty);
             if(!empty){
                 setGraphic(refreshButton);
+            }
+        }
+    }
+
+    private class MakeCopyButtonCell extends TableCell<JadbDevice, Boolean> {
+        final Button makeCopyButtonCell = new Button(StringConfig.MAKE_COPY);
+
+        MakeCopyButtonCell(){
+
+            makeCopyButtonCell.setOnAction(action -> {
+                if(!nameInput.getText().isEmpty()) {
+                    // TODO Check if copy already exists
+                    JadbDevice selectedDevice = availableDevices.get(this.getIndex());
+                    backupper.makeBackup(nameInput.getText(), selectedDevice);
+                    showAlert(StringConfig.COPY_CREATED_ALERT_TITLE, StringConfig.COPY_CREATED_ALERT_BODY,
+                            null, Alert.AlertType.INFORMATION);
+                }
+                else{
+                    showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
+                            null, Alert.AlertType.WARNING);
+                }
+            });
+        }
+
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if(!empty){
+                setGraphic(makeCopyButtonCell);
             }
         }
     }
