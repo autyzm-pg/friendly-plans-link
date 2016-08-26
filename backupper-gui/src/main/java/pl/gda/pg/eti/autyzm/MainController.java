@@ -31,9 +31,6 @@ public class MainController {
 
     @FXML private TextField nameInput;
 
-    @FXML public Label directoryRefreshLabel;
-    private String directoryRefreshPath = null;
-
     @FXML private TableView<DeviceCopy> tableView;
     @FXML private TableColumn<DeviceCopy, String> name;
     @FXML private TableColumn<DeviceCopy, String> createDate;
@@ -43,27 +40,44 @@ public class MainController {
     @FXML private TableColumn<JadbDevice, String> device;
     @FXML private TableColumn<JadbDevice, Boolean> chooseDevice;
 
+    @FXML private TableView<JadbDevice> deviceToRefreshTableView;
+    @FXML private TableColumn<JadbDevice, String> deviceToRefresh;
+    @FXML private TableColumn<JadbDevice, Boolean> chooseDeviceToRefresh;
+
     private ObservableList<DeviceCopy> deviceCopyData = FXCollections.observableArrayList();
     private ObservableList<JadbDevice> availableDevices = FXCollections.observableArrayList();
+    private ObservableList<JadbDevice> availableDevicesToRefresh = FXCollections.observableArrayList();
 
+    private JadbDevice selectedDeviceToRefresh = null;
     private Backupper backupper = new FileBackupper();
 
     @FXML
     public void initialize() {
+
         setDeviceTableColumnDataBindings();
         setTableColumnDataBindings();
+        setDeviceToRefreshTableColumnDataBindings();
+
         setTableColumnWidth();
         setDeviceTableColumnWidth();
+        setDeviceToRefreshTableColumnWidth();
+
         tableView.setItems(deviceCopyData);
         deviceTableView.setItems(availableDevices);
+        deviceToRefreshTableView.setItems(availableDevicesToRefresh);
 
         initAdbConnection();
         showConnectedDevices();
+        showExistingCopies();
     }
 
     @FXML
     public void refreshDeviceList(ActionEvent actionEvent) {
         showConnectedDevices();
+    }
+
+    private void showExistingCopies() {
+        //Show existing copies
     }
 
     private void showConnectedDevices() {
@@ -72,18 +86,11 @@ public class MainController {
         if(!devices.isEmpty()) {
               availableDevices.clear();
               availableDevices.addAll(devices);
+              availableDevicesToRefresh.clear();
+              availableDevicesToRefresh.addAll(devices);
         } else {
             showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
                     null, Alert.AlertType.WARNING);
-        }
-    }
-
-    @FXML
-    public void chooseDeviceToRefresh(ActionEvent actionEvent) {
-        File chosenDirectory = showDirectoryChooserDialog(StringConfig.CHOOSE_DEVICE_TO_REFRESH);
-        if(chosenDirectory != null) {
-            directoryRefreshPath = chosenDirectory.getAbsolutePath();
-            directoryRefreshLabel.setText(chosenDirectory.getAbsolutePath());
         }
     }
 
@@ -121,6 +128,18 @@ public class MainController {
         device.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
         chooseDevice.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
     }
+    private void setDeviceToRefreshTableColumnDataBindings(){
+        deviceToRefresh.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
+        chooseDeviceToRefresh.setCellValueFactory(
+                cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
+        chooseDeviceToRefresh.setCellFactory(
+                cellData -> new ChooseDeviceRadioBoxCell());
+    }
+    private void setDeviceToRefreshTableColumnWidth() {
+        deviceToRefresh.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
+        chooseDeviceToRefresh.prefWidthProperty().bind(tableView.widthProperty().multiply(0.1));
+        deviceToRefreshTableView.setMaxHeight(100.0);
+    }
 
     private void showAlert(String title, String contentText, String headerText, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
@@ -128,13 +147,6 @@ public class MainController {
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
         alert.showAndWait();
-    }
-
-    private File showDirectoryChooserDialog(String dialogTitle) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle(dialogTitle);
-        Stage stage = (Stage) root.getScene().getWindow();
-        return directoryChooser.showDialog(stage);
     }
 
     private List<JadbDevice> getConnectedDevices() {
@@ -154,7 +166,7 @@ public class MainController {
         RefreshButtonCell(){
 
             refreshButton.setOnAction(action -> {
-                if(directoryRefreshPath != null) {
+                if(selectedDeviceToRefresh != null) {
                     showAlert(StringConfig.COPY_REFRESHED_ALERT_TITLE, StringConfig.COPY_REFRESHED_ALERT_BODY,
                             null, Alert.AlertType.INFORMATION);
 
@@ -205,4 +217,21 @@ public class MainController {
         }
     }
 
+    private class ChooseDeviceRadioBoxCell extends TableCell<JadbDevice, Boolean> {
+        final RadioButton chooseDeviceRadioBox = new RadioButton();
+
+        ChooseDeviceRadioBoxCell(){
+            chooseDeviceRadioBox.setOnAction(action -> {
+                selectedDeviceToRefresh = availableDevicesToRefresh.get(this.getIndex());
+            });
+        }
+
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if(!empty){
+                setGraphic(chooseDeviceRadioBox);
+            }
+        }
+    }
 }
