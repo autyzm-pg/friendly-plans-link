@@ -67,20 +67,20 @@ public class MainController {
         deviceToRefreshTableView.setItems(availableDevicesToRefresh);
 
         initAdbConnection();
-        showConnectedDevices();
+        showConnectedDevices(true);
         showExistingCopies();
     }
 
     @FXML
     public void refreshDeviceList(ActionEvent actionEvent) {
-        showConnectedDevices();
+        showConnectedDevices(false);
     }
 
     private void showExistingCopies() {
         //Show existing copies
     }
 
-    private void showConnectedDevices() {
+    private void showConnectedDevices(Boolean appStart) {
         List devices = getConnectedDevices();
 
         if(!devices.isEmpty()) {
@@ -88,7 +88,7 @@ public class MainController {
               availableDevices.addAll(devices);
               availableDevicesToRefresh.clear();
               availableDevicesToRefresh.addAll(devices);
-        } else {
+        } else if(!appStart) {
             showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
                     null, Alert.AlertType.WARNING);
         }
