@@ -13,6 +13,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import pl.gda.pg.eti.autyzm.Tables.CopiesTable;
+import pl.gda.pg.eti.autyzm.Tables.DeviceTable;
+import pl.gda.pg.eti.autyzm.Tables.DeviceToRefreshTable;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
 import pl.gda.pg.eti.autyzm.backupper.core.FileBackupper;
@@ -26,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainController {
-
-    @FXML private BorderPane root;
 
     @FXML private TextField nameInput;
 
@@ -44,27 +45,16 @@ public class MainController {
     @FXML private TableColumn<JadbDevice, String> deviceToRefresh;
     @FXML private TableColumn<JadbDevice, Boolean> chooseDeviceToRefresh;
 
-    private ObservableList<DeviceCopy> deviceCopyData = FXCollections.observableArrayList();
-    private ObservableList<JadbDevice> availableDevices = FXCollections.observableArrayList();
-    private ObservableList<JadbDevice> availableDevicesToRefresh = FXCollections.observableArrayList();
-
     private JadbDevice selectedDeviceToRefresh = null;
-    private Backupper backupper = new FileBackupper();
+    private DeviceTable deviceTable;
+    private CopiesTable copiesTable;
+    private DeviceToRefreshTable deviceToRefreshTable;
 
     @FXML
     public void initialize() {
-
-        setDeviceTableColumnDataBindings();
-        setTableColumnDataBindings();
-        setDeviceToRefreshTableColumnDataBindings();
-
-        setTableColumnWidth();
-        setDeviceTableColumnWidth();
-        setDeviceToRefreshTableColumnWidth();
-
-        tableView.setItems(deviceCopyData);
-        deviceTableView.setItems(availableDevices);
-        deviceToRefreshTableView.setItems(availableDevicesToRefresh);
+        deviceTable = new DeviceTable(deviceTableView, device, chooseDevice, nameInput);
+        copiesTable = new CopiesTable(tableView, name, createDate, refreshCopyAction,selectedDeviceToRefresh);
+        deviceToRefreshTable = new DeviceToRefreshTable(deviceToRefreshTableView, deviceToRefresh, chooseDeviceToRefresh, selectedDeviceToRefresh);
 
         initAdbConnection();
         showConnectedDevices(true);
@@ -83,15 +73,12 @@ public class MainController {
     private void showConnectedDevices(Boolean appStart) {
         List devices = getConnectedDevices();
 
-        if(!devices.isEmpty()) {
-              availableDevices.clear();
-              availableDevices.addAll(devices);
-              availableDevicesToRefresh.clear();
-              availableDevicesToRefresh.addAll(devices);
-        } else if(!appStart) {
+        if(devices.isEmpty() && !appStart) {
             showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
                     null, Alert.AlertType.WARNING);
         }
+        deviceTable.updateDevices(devices);
+        deviceToRefreshTable.updateDevices(devices);
     }
 
     private void initAdbConnection() {
@@ -102,43 +89,6 @@ public class MainController {
             showAlert(StringConfig.FAILED_TO_INIT_ADB_CONNECTION_TITLE, StringConfig.FAILED_TO_INIT_ADB_CONNECTION_BODY,
                     null, Alert.AlertType.ERROR);
         }
-    }
-
-    private void setDeviceTableColumnDataBindings(){
-        device.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
-        chooseDevice.setCellValueFactory(
-                cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
-        chooseDevice.setCellFactory(
-                cellData -> new MakeCopyButtonCell());
-    }
-    private void setTableColumnDataBindings() {
-        name.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
-        createDate.setCellValueFactory(cellData -> cellData.getValue().getCreateDateProperty());
-        refreshCopyAction.setCellValueFactory(
-                cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
-        refreshCopyAction.setCellFactory(
-                cellData -> new RefreshButtonCell());
-    }
-    private void setTableColumnWidth() {
-        name.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
-        createDate.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
-        refreshCopyAction.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
-    }
-    private void setDeviceTableColumnWidth() {
-        device.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
-        chooseDevice.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
-    }
-    private void setDeviceToRefreshTableColumnDataBindings(){
-        deviceToRefresh.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
-        chooseDeviceToRefresh.setCellValueFactory(
-                cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
-        chooseDeviceToRefresh.setCellFactory(
-                cellData -> new ChooseDeviceRadioBoxCell());
-    }
-    private void setDeviceToRefreshTableColumnWidth() {
-        deviceToRefresh.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
-        chooseDeviceToRefresh.prefWidthProperty().bind(tableView.widthProperty().multiply(0.1));
-        deviceToRefreshTableView.setMaxHeight(100.0);
     }
 
     private void showAlert(String title, String contentText, String headerText, Alert.AlertType alertType) {
@@ -160,78 +110,4 @@ public class MainController {
         }
     }
 
-    private class RefreshButtonCell extends TableCell<DeviceCopy, Boolean> {
-        final Button refreshButton = new Button(StringConfig.REFRESH_BUTTON);
-
-        RefreshButtonCell(){
-
-            refreshButton.setOnAction(action -> {
-                if(selectedDeviceToRefresh != null) {
-                    showAlert(StringConfig.COPY_REFRESHED_ALERT_TITLE, StringConfig.COPY_REFRESHED_ALERT_BODY,
-                            null, Alert.AlertType.INFORMATION);
-
-                    //refresh
-                }
-                else{
-                    showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
-                            null, Alert.AlertType.WARNING);
-                }
-            });
-        }
-
-        @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if(!empty){
-                setGraphic(refreshButton);
-            }
-        }
-    }
-
-    private class MakeCopyButtonCell extends TableCell<JadbDevice, Boolean> {
-        final Button makeCopyButtonCell = new Button(StringConfig.MAKE_COPY);
-
-        MakeCopyButtonCell(){
-
-            makeCopyButtonCell.setOnAction(action -> {
-                if(!nameInput.getText().isEmpty()) {
-                    // TODO Check if copy already exists
-                    JadbDevice selectedDevice = availableDevices.get(this.getIndex());
-                    backupper.makeBackup(nameInput.getText(), selectedDevice);
-                    showAlert(StringConfig.COPY_CREATED_ALERT_TITLE, StringConfig.COPY_CREATED_ALERT_BODY,
-                            null, Alert.AlertType.INFORMATION);
-                }
-                else{
-                    showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
-                            null, Alert.AlertType.WARNING);
-                }
-            });
-        }
-
-        @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if(!empty){
-                setGraphic(makeCopyButtonCell);
-            }
-        }
-    }
-
-    private class ChooseDeviceRadioBoxCell extends TableCell<JadbDevice, Boolean> {
-        final RadioButton chooseDeviceRadioBox = new RadioButton();
-
-        ChooseDeviceRadioBoxCell(){
-            chooseDeviceRadioBox.setOnAction(action -> {
-                selectedDeviceToRefresh = availableDevicesToRefresh.get(this.getIndex());
-            });
-        }
-
-        @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if(!empty){
-                setGraphic(chooseDeviceRadioBox);
-            }
-        }
-    }
 }
