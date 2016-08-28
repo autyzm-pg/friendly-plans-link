@@ -11,8 +11,10 @@
 <?import java.net.URL?>
 <?import pl.gda.pg.eti.autyzm.StringConfig?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane styleClass="root" id="root" fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="pl.gda.pg.eti.autyzm.MainController">
+            fx:controller="pl.gda.pg.eti.autyzm.MainController">
     <center>
         <TabPane>
             <tabs>
@@ -28,20 +30,30 @@
                                 </Label>
                                 <TextField fx:id="nameInput"/>
                             </VBox>
-                            <HBox styleClass="chooseDeviceArea">
-                                <Button onAction="#chooseDeviceToDownload">
-                                    <StringConfig fx:constant="CHOOSE_DEVICE"/>
+                            <VBox>
+                                <Button onAction="#refreshDeviceList">
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                                            <image>
+                                                <Image url="images/refresh.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
                                 </Button>
-                                <Label fx:id="directoryDownloadInputLabel"
-                                       styleClass="chooseDeviceLabel">
-                                    <StringConfig fx:constant="NO_CHOSEN_DEVICE"/>
-                                </Label>
-                            </HBox>
-                            <HBox styleClass="downloadCopyButtonArea">
-                                <Button styleClass="downloadCopyButton" onAction="#download">
-                                    <StringConfig fx:constant="MAKE_COPY"/>
-                                </Button>
-                            </HBox>
+                                <HBox styleClass="chooseDeviceArea">
+                                    <TableView fx:id="deviceTableView">
+                                        <columns>
+                                            <TableColumn fx:id="device">
+                                                <text>
+                                                    <StringConfig fx:constant="DEVICE_COLUMN"/>
+                                                </text>
+                                            </TableColumn>
+                                            <TableColumn fx:id="chooseDevice" sortable="false">
+                                            </TableColumn>
+                                        </columns>
+                                    </TableView>
+                                </HBox>
+                            </VBox>
                         </VBox>
                     </content>
 
@@ -54,12 +66,28 @@
                         <BorderPane styleClass="refreshTab">
                             <top>
                                 <HBox styleClass="chooseDeviceArea">
-                                    <Button onAction="#chooseDeviceToRefresh">
-                                        <StringConfig fx:constant="CHOOSE_DEVICE"/>
+
+                                    <Button onAction="#refreshDeviceList">
+                                        <graphic>
+                                            <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                <image>
+                                                    <Image url="images/refresh.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
                                     </Button>
-                                    <Label fx:id="directoryRefreshLabel" styleClass="chooseDeviceLabel">
-                                        <StringConfig fx:constant="NO_CHOSEN_DEVICE"/>
-                                    </Label>
+
+                                    <TableView fx:id="deviceToRefreshTableView">
+                                        <columns>
+                                            <TableColumn fx:id="deviceToRefresh">
+                                                <text>
+                                                    <StringConfig fx:constant="DEVICE_COLUMN"/>
+                                                </text>
+                                            </TableColumn>
+                                            <TableColumn fx:id="chooseDeviceToRefresh" sortable="false">
+                                            </TableColumn>
+                                        </columns>
+                                    </TableView>
                                 </HBox>
                             </top>
                             <center>
