@@ -1,30 +1,16 @@
 package pl.gda.pg.eti.autyzm;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 import pl.gda.pg.eti.autyzm.Tables.CopiesTable;
 import pl.gda.pg.eti.autyzm.Tables.DeviceTable;
 import pl.gda.pg.eti.autyzm.Tables.DeviceToRefreshTable;
-import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
-import pl.gda.pg.eti.autyzm.backupper.core.FileBackupper;
 import se.vidstige.jadb.JadbDevice;
 import se.vidstige.jadb.JadbException;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,8 +60,8 @@ public class MainController {
         List devices = getConnectedDevices();
 
         if(devices.isEmpty() && !appStart) {
-            showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
-                    null, Alert.AlertType.WARNING);
+            Info.showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
+                    null, Info.TYPE.WARNING);
         }
         deviceTable.updateDevices(devices);
         deviceToRefreshTable.updateDevices(devices);
@@ -86,25 +72,17 @@ public class MainController {
             AdbProxy.initAdbConnection();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(StringConfig.FAILED_TO_INIT_ADB_CONNECTION_TITLE, StringConfig.FAILED_TO_INIT_ADB_CONNECTION_BODY,
-                    null, Alert.AlertType.ERROR);
+            Info.showAlert(StringConfig.FAILED_TO_INIT_ADB_CONNECTION_TITLE, StringConfig.FAILED_TO_INIT_ADB_CONNECTION_BODY,
+                    null, Info.TYPE.ERROR);
         }
-    }
-
-    private void showAlert(String title, String contentText, String headerText, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.setContentText(contentText);
-        alert.showAndWait();
     }
 
     private List<JadbDevice> getConnectedDevices() {
         try {
             return AdbProxy.getConnectedDevices();
         } catch (IOException | JadbException e) {
-            showAlert(StringConfig.LOOKING_FOR_DEVICES_ERROR_TITLE, StringConfig.LOOKING_FOR_DEVICES_ERROR_BODY,
-                    null, Alert.AlertType.ERROR);
+            Info.showAlert(StringConfig.LOOKING_FOR_DEVICES_ERROR_TITLE, StringConfig.LOOKING_FOR_DEVICES_ERROR_BODY,
+                    null, Info.TYPE.ERROR);
             e.printStackTrace();
             return new ArrayList<>();
         }

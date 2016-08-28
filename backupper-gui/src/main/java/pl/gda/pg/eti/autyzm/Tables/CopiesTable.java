@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import pl.gda.pg.eti.autyzm.DeviceCopy;
+import pl.gda.pg.eti.autyzm.Info;
 import pl.gda.pg.eti.autyzm.StringConfig;
 import se.vidstige.jadb.JadbDevice;
 
@@ -13,42 +14,48 @@ import se.vidstige.jadb.JadbDevice;
  */
 public class CopiesTable extends Table {
 
+    private static final double CREATE_DATE_COLUMN_WIDTH = 0.3;
+    private static final double REFRESH_COPY_COLUMN_WIDTH = 0.2;
+    private static final double NAME_COLUMN_WIDTH = 0.5;
+
     private final JadbDevice selectedDeviceToRefresh;
+
     private TableView<DeviceCopy> tableView;
-    private TableColumn<DeviceCopy, String> name;
-    private TableColumn<DeviceCopy, String> createDate;
-    private TableColumn<DeviceCopy, Boolean> refreshCopyAction;
+    private TableColumn<DeviceCopy, String> nameColumn;
+    private TableColumn<DeviceCopy, String> createDateColumn;
+    private TableColumn<DeviceCopy, Boolean> refreshCopyColumn;
+    private ObservableList<DeviceCopy> copies = FXCollections.observableArrayList();
 
-    private ObservableList<DeviceCopy> deviceCopyData = FXCollections.observableArrayList();
-
-    public CopiesTable(TableView<DeviceCopy> tableView, TableColumn<DeviceCopy, String> name, TableColumn<DeviceCopy, String> createDate, TableColumn<DeviceCopy, Boolean> refreshCopyAction,
+    public CopiesTable(TableView<DeviceCopy> tableView, TableColumn<DeviceCopy, String> name, TableColumn<DeviceCopy, String> createDate, TableColumn<DeviceCopy, Boolean> refreshCopy,
                        JadbDevice selectedDeviceToRefresh){
         this.tableView = tableView;
-        this.name = name;
-        this.createDate = createDate;
-        this.refreshCopyAction = refreshCopyAction;
+        this.nameColumn = name;
+        this.createDateColumn = createDate;
+        this.refreshCopyColumn = refreshCopy;
+
+        // I probably should not share selected device with device table table this way
         this.selectedDeviceToRefresh = selectedDeviceToRefresh;
 
         setDataBindings();
         setColumnWidth();
-        tableView.setItems(this.deviceCopyData);
+        tableView.setItems(this.copies);
     }
 
     @Override
     void setDataBindings() {
-        name.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
-        createDate.setCellValueFactory(cellData -> cellData.getValue().getCreateDateProperty());
-        refreshCopyAction.setCellValueFactory(
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
+        createDateColumn.setCellValueFactory(cellData -> cellData.getValue().getCreateDateProperty());
+        refreshCopyColumn.setCellValueFactory(
                 cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
-        refreshCopyAction.setCellFactory(
+        refreshCopyColumn.setCellFactory(
                 cellData -> new RefreshButtonCell());
     }
 
     @Override
     void setColumnWidth() {
-        name.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
-        createDate.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
-        refreshCopyAction.prefWidthProperty().bind(tableView.widthProperty().multiply(0.2));
+        nameColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(NAME_COLUMN_WIDTH));
+        createDateColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(CREATE_DATE_COLUMN_WIDTH));
+        refreshCopyColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(REFRESH_COPY_COLUMN_WIDTH));
     }
 
     private class RefreshButtonCell extends TableCell<DeviceCopy, Boolean> {
@@ -58,14 +65,14 @@ public class CopiesTable extends Table {
 
             refreshButton.setOnAction(action -> {
                 if(selectedDeviceToRefresh != null) {
-                    showAlert(StringConfig.COPY_REFRESHED_ALERT_TITLE, StringConfig.COPY_REFRESHED_ALERT_BODY,
-                            null, Alert.AlertType.INFORMATION);
+                    Info.showAlert(StringConfig.COPY_REFRESHED_ALERT_TITLE, StringConfig.COPY_REFRESHED_ALERT_BODY,
+                            null, Info.TYPE.INFORMATION);
 
                     //refresh
                 }
                 else{
-                    showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
-                            null, Alert.AlertType.WARNING);
+                    Info.showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
+                            null, Info.TYPE.WARNING);
                 }
             });
         }

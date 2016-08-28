@@ -4,7 +4,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import pl.gda.pg.eti.autyzm.Config;
 import se.vidstige.jadb.JadbDevice;
@@ -16,43 +15,51 @@ import java.util.List;
  */
 public class DeviceToRefreshTable extends Table {
 
-    private JadbDevice selectedDeviceToRefresh;
-    @FXML private TableView<JadbDevice> deviceToRefreshTableView;
-    @FXML private TableColumn<JadbDevice, String> deviceToRefresh;
-    @FXML private TableColumn<JadbDevice, Boolean> chooseDeviceToRefresh;
-    private ObservableList<JadbDevice> availableDevicesToRefresh = FXCollections.observableArrayList();
+    private static final double DEVICE_COLUMN_WIDTH = 0.9;
+    private static final double CHOOSE_DEVICE_COLUMN_WIDTH = 0.1;
+    private static final double MAX_TABLE_HEIGHT = 100.0;
 
-    public DeviceToRefreshTable(TableView<JadbDevice> deviceTableView, TableColumn<JadbDevice, String> device, TableColumn<JadbDevice, Boolean> chooseDevice, JadbDevice selectedDeviceToRefresh){
-        this.deviceToRefreshTableView = deviceTableView;
-        this.deviceToRefresh = device;
-        this.chooseDeviceToRefresh = chooseDevice;
-        this.selectedDeviceToRefresh = selectedDeviceToRefresh;
+    private JadbDevice selectedDevice;
+
+    private TableView<JadbDevice> tableView;
+    private TableColumn<JadbDevice, String> deviceColumn;
+    private TableColumn<JadbDevice, Boolean> chooseDeviceColumn;
+    private ObservableList<JadbDevice> devices = FXCollections.observableArrayList();
+
+    public DeviceToRefreshTable(TableView<JadbDevice> tableView, TableColumn<JadbDevice, String> deviceColumn, TableColumn<JadbDevice, Boolean> chooseDeviceColumn, JadbDevice selectedDevice){
+        this.tableView = tableView;
+        this.deviceColumn = deviceColumn;
+        this.chooseDeviceColumn = chooseDeviceColumn;
+
+        // I probably should not share selected device to copies table this way
+        this.selectedDevice = selectedDevice;
 
         setDataBindings();
         setColumnWidth();
-        this.deviceToRefreshTableView.setItems(this.availableDevicesToRefresh);
+        this.tableView.setItems(this.devices);
     }
 
     @Override
     void setDataBindings() {
-        deviceToRefresh.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
-        chooseDeviceToRefresh.setCellValueFactory(
+        deviceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
+        chooseDeviceColumn.setCellValueFactory(
                 cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
-        chooseDeviceToRefresh.setCellFactory(
+        chooseDeviceColumn.setCellFactory(
                 cellData -> new ChooseDeviceRadioBoxCell());
     }
 
     @Override
     void setColumnWidth() {
-        deviceToRefreshTableView.setPrefWidth(Config.SCENE_WIDTH);
-        deviceToRefresh.prefWidthProperty().bind(this.deviceToRefreshTableView.widthProperty().multiply(0.9));
-        chooseDeviceToRefresh.prefWidthProperty().bind(this.deviceToRefreshTableView.widthProperty().multiply(0.1));
-        deviceToRefreshTableView.setMaxHeight(100.0);
+        tableView.setPrefWidth(Config.SCENE_WIDTH);
+        deviceColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(DEVICE_COLUMN_WIDTH));
+        chooseDeviceColumn.prefWidthProperty().bind(this.tableView.widthProperty().multiply(CHOOSE_DEVICE_COLUMN_WIDTH));
+        tableView.setMaxHeight(MAX_TABLE_HEIGHT);
     }
 
     public void updateDevices(List devices) {
-        availableDevicesToRefresh.clear();
-        availableDevicesToRefresh.addAll(devices);
+        this.devices.clear();
+        this.devices.addAll(devices);
+        tableView.refresh();
     }
 
     private class ChooseDeviceRadioBoxCell extends TableCell<JadbDevice, Boolean> {
@@ -60,7 +67,7 @@ public class DeviceToRefreshTable extends Table {
 
         ChooseDeviceRadioBoxCell(){
             chooseDeviceRadioBox.setOnAction(action -> {
-                selectedDeviceToRefresh = availableDevicesToRefresh.get(this.getIndex());
+                selectedDevice = devices.get(this.getIndex());
             });
         }
 

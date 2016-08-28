@@ -6,11 +6,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import pl.gda.pg.eti.autyzm.Config;
+import pl.gda.pg.eti.autyzm.Info;
 import pl.gda.pg.eti.autyzm.StringConfig;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.core.FileBackupper;
 import se.vidstige.jadb.JadbDevice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,42 +20,50 @@ import java.util.List;
  */
 public class DeviceTable extends Table {
 
+    private static final double DEVICE_COLUMN_WIDTH = 0.7;
+    private static final double MAKE_COPY_COLUMN_WIDTH = 0.3;
     private TextField nameInput;
-    private TableView<JadbDevice> deviceTableView;
-    private TableColumn<JadbDevice, String> device;
-    private TableColumn<JadbDevice, Boolean> chooseDevice;
-    private ObservableList<JadbDevice> availableDevices = FXCollections.observableArrayList();
+
+    private TableView<JadbDevice> tableView;
+    private TableColumn<JadbDevice, String> deviceColumn;
+    private TableColumn<JadbDevice, Boolean> makeCopyColumn;
+    private ObservableList<JadbDevice> devices = FXCollections.observableArrayList();
+
     private Backupper backupper = new FileBackupper();
 
-    public DeviceTable(TableView<JadbDevice> deviceTableView, TableColumn<JadbDevice, String> device, TableColumn<JadbDevice, Boolean> chooseDevice, TextField nameInput){
-        this.deviceTableView = deviceTableView;
-        this.device = device;
-        this.chooseDevice = chooseDevice;
+    public DeviceTable(TableView<JadbDevice> tableView, TableColumn<JadbDevice, String> deviceColumn, TableColumn<JadbDevice, Boolean> makeCopyColumn, TextField nameInput){
+        this.tableView = tableView;
+        this.deviceColumn = deviceColumn;
+        this.makeCopyColumn = makeCopyColumn;
+
+        // I probably should not check name input field in controller is set this way
         this.nameInput = nameInput;
+
         setDataBindings();
         setColumnWidth();
-        deviceTableView.setItems(this.availableDevices);
+        tableView.setItems(this.devices);
     }
 
     public void updateDevices(List devices){
-        availableDevices.clear();
-        availableDevices.addAll(devices);
+        this.devices.clear();
+        this.devices.addAll(devices);
+        tableView.refresh();
     }
 
     @Override
     void setDataBindings() {
-        device.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
-        chooseDevice.setCellValueFactory(
+        deviceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
+        makeCopyColumn.setCellValueFactory(
                 cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
-        chooseDevice.setCellFactory(
+        makeCopyColumn.setCellFactory(
                 cellData -> new MakeCopyButtonCell());
     }
 
     @Override
     void setColumnWidth() {
-        deviceTableView.setPrefWidth(Config.SCENE_WIDTH);
-        device.prefWidthProperty().bind(deviceTableView.widthProperty().multiply(0.7));
-        chooseDevice.prefWidthProperty().bind(deviceTableView.widthProperty().multiply(0.3));
+        tableView.setPrefWidth(Config.SCENE_WIDTH);
+        deviceColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(DEVICE_COLUMN_WIDTH));
+        makeCopyColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(MAKE_COPY_COLUMN_WIDTH));
     }
 
     private class MakeCopyButtonCell extends TableCell<JadbDevice, Boolean> {
@@ -63,15 +73,22 @@ public class DeviceTable extends Table {
 
             makeCopyButtonCell.setOnAction(action -> {
                 if(!nameInput.getText().isEmpty()) {
+                    try{
                     // TODO Check if copy already exists
-                    JadbDevice selectedDevice = availableDevices.get(this.getIndex());
+                    JadbDevice selectedDevice = devices.get(this.getIndex());
                     backupper.makeBackup(nameInput.getText(), selectedDevice);
-                    showAlert(StringConfig.COPY_CREATED_ALERT_TITLE, StringConfig.COPY_CREATED_ALERT_BODY,
-                            null, Alert.AlertType.INFORMATION);
+                    Info.showAlert(StringConfig.COPY_CREATED_ALERT_TITLE, StringConfig.COPY_CREATED_ALERT_BODY,
+                            null, Info.TYPE.INFORMATION);
+                    }catch (Exception ex){
+                        Info.showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
+                                null, Info.TYPE.ERROR);
+                        updateDevices(new ArrayList());
+                    }
+
                 }
                 else{
-                    showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
-                            null, Alert.AlertType.WARNING);
+                    Info.showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
+                            null, Info.TYPE.WARNING);
                 }
             });
         }
