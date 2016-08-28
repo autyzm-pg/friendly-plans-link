@@ -15,9 +15,6 @@ import se.vidstige.jadb.JadbDevice;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by malgorzatas on 26/08/16.
- */
 public class DeviceTable extends Table {
 
     private static final double DEVICE_COLUMN_WIDTH = 0.7;

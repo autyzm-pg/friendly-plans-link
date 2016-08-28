@@ -9,9 +9,7 @@ import pl.gda.pg.eti.autyzm.Info;
 import pl.gda.pg.eti.autyzm.StringConfig;
 import se.vidstige.jadb.JadbDevice;
 
-/**
- * Created by malgorzatas on 26/08/16.
- */
+
 public class CopiesTable extends Table {
 
     private static final double CREATE_DATE_COLUMN_WIDTH = 0.3;
