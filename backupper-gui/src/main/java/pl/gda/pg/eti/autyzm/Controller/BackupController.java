@@ -27,8 +27,6 @@ public class BackupController extends BaseController {
     @FXML
     public void initialize() {
         deviceTable = new DeviceTable(deviceTableView, device, chooseDevice, nameInput);
-
-        initAdbConnection();
         showConnectedDevices(true);
     }
 

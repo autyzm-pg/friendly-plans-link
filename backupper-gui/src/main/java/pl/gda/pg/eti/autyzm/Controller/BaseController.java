@@ -15,16 +15,6 @@ import java.util.List;
  */
 public abstract class BaseController {
 
-    protected void initAdbConnection() {
-        try {
-            AdbProxy.initAdbConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Info.showAlert(StringConfig.FAILED_TO_INIT_ADB_CONNECTION_TITLE, StringConfig.FAILED_TO_INIT_ADB_CONNECTION_BODY,
-                    null, Info.TYPE.ERROR);
-        }
-    }
-
     protected List<JadbDevice> getConnectedDevices() {
         try {
             return AdbProxy.getConnectedDevices();

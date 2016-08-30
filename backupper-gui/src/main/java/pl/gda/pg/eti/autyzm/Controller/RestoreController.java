@@ -35,7 +35,6 @@ public class RestoreController extends BaseController {
         copiesTable = new CopiesTable(tableView, name, createDate, refreshCopyAction,selectedDeviceToRefresh);
         deviceToRefreshTable = new DeviceToRefreshTable(deviceToRefreshTableView, deviceToRefresh, chooseDeviceToRefresh, selectedDeviceToRefresh);
 
-        initAdbConnection();
         showConnectedDevices(true);
         showExistingCopies();
     }
