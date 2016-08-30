@@ -1,4 +1,4 @@
-package pl.gda.pg.eti.autyzm.Tables;
+package pl.gda.pg.eti.autyzm.Model;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;

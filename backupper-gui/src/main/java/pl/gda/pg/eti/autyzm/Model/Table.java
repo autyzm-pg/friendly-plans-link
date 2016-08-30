@@ -1,4 +1,4 @@
-package pl.gda.pg.eti.autyzm.Tables;
+package pl.gda.pg.eti.autyzm.Model;
 
 
 public abstract class Table {

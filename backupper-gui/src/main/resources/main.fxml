@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.Label?>
-
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
 <?import java.net.URL?>
-<?import pl.gda.pg.eti.autyzm.StringConfig?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
+<?import pl.gda.pg.eti.autyzm.StringConfig?>
 <BorderPane styleClass="root" id="root" fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="pl.gda.pg.eti.autyzm.MainController">
+            fx:controller="pl.gda.pg.eti.autyzm.Controller.MainController">
     <center>
         <TabPane>
             <tabs>
@@ -23,93 +15,15 @@
                         <StringConfig fx:constant="MAKE_COPY"/>
                     </text>
                     <content>
-                        <VBox styleClass="copyTab">
-                            <VBox styleClass="copyNameInputArea">
-                                <Label>
-                                    <StringConfig fx:constant="COPY_INPUT_NAME_LABEL"/>
-                                </Label>
-                                <TextField fx:id="nameInput"/>
-                            </VBox>
-                            <VBox>
-                                <Button onAction="#refreshDeviceList">
-                                    <graphic>
-                                        <ImageView fitHeight="20.0" fitWidth="20.0">
-                                            <image>
-                                                <Image url="images/refresh.png" />
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                </Button>
-                                <HBox styleClass="chooseDeviceArea">
-                                    <TableView fx:id="deviceTableView">
-                                        <columns>
-                                            <TableColumn fx:id="device">
-                                                <text>
-                                                    <StringConfig fx:constant="DEVICE_COLUMN"/>
-                                                </text>
-                                            </TableColumn>
-                                            <TableColumn fx:id="chooseDevice" sortable="false">
-                                            </TableColumn>
-                                        </columns>
-                                    </TableView>
-                                </HBox>
-                            </VBox>
-                        </VBox>
+                        <fx:include source="backup.fxml"/>
                     </content>
-
                 </Tab>
                 <Tab closable="false">
                     <text>
                         <StringConfig fx:constant="REFRESH_COPY"/>
                     </text>
                     <content>
-                        <BorderPane styleClass="refreshTab">
-                            <top>
-                                <HBox styleClass="chooseDeviceArea">
-
-                                    <Button onAction="#refreshDeviceList">
-                                        <graphic>
-                                            <ImageView fitHeight="20.0" fitWidth="20.0">
-                                                <image>
-                                                    <Image url="images/refresh.png" />
-                                                </image>
-                                            </ImageView>
-                                        </graphic>
-                                    </Button>
-
-                                    <TableView fx:id="deviceToRefreshTableView">
-                                        <columns>
-                                            <TableColumn fx:id="deviceToRefresh">
-                                                <text>
-                                                    <StringConfig fx:constant="DEVICE_COLUMN"/>
-                                                </text>
-                                            </TableColumn>
-                                            <TableColumn fx:id="chooseDeviceToRefresh" sortable="false">
-                                            </TableColumn>
-                                        </columns>
-                                    </TableView>
-                                </HBox>
-                            </top>
-                            <center>
-                                <TableView fx:id="tableView">
-                                    <columns>
-                                        <TableColumn fx:id="name">
-                                            <text>
-                                             <StringConfig fx:constant="NAME_COLUMN"/>
-                                            </text>
-                                        </TableColumn>
-                                        <TableColumn  fx:id="createDate">
-                                            <text>
-                                                <StringConfig fx:constant="CREATE_DATE_COLUMN"/>
-                                            </text>
-                                        </TableColumn>
-                                        <TableColumn fx:id="refreshCopyAction" styleClass="refreshActionColumn"
-                                                     sortable="false">
-                                        </TableColumn>
-                                    </columns>
-                                </TableView>
-                            </center>
-                        </BorderPane>
+                        <fx:include source="restore.fxml"/>
                     </content>
                 </Tab>
             </tabs>

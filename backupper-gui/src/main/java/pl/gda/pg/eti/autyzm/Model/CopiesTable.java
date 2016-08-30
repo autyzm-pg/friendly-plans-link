@@ -1,11 +1,10 @@
-package pl.gda.pg.eti.autyzm.Tables;
+package pl.gda.pg.eti.autyzm.Model;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import pl.gda.pg.eti.autyzm.DeviceCopy;
-import pl.gda.pg.eti.autyzm.Info;
 import pl.gda.pg.eti.autyzm.StringConfig;
 import se.vidstige.jadb.JadbDevice;
 

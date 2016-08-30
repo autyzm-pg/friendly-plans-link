@@ -1,4 +1,4 @@
-package pl.gda.pg.eti.autyzm;
+package pl.gda.pg.eti.autyzm.Model;
 
 import javafx.scene.control.Alert;
 

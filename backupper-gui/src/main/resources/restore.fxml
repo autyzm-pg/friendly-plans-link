@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import pl.gda.pg.eti.autyzm.StringConfig?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<BorderPane styleClass="refreshTab" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pl.gda.pg.eti.autyzm.Controller.RestoreController">
+
+            <top>
+                <HBox styleClass="chooseDeviceArea">
+
+                    <Button onAction="#refreshDeviceList">
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0">
+                                <image>
+                                    <Image url="images/refresh.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+
+                    <TableView fx:id="deviceToRefreshTableView">
+                        <columns>
+                            <TableColumn fx:id="deviceToRefresh">
+                                <text>
+                                    <StringConfig fx:constant="DEVICE_COLUMN"/>
+                                </text>
+                            </TableColumn>
+                            <TableColumn fx:id="chooseDeviceToRefresh" sortable="false">
+                            </TableColumn>
+                        </columns>
+                    </TableView>
+                </HBox>
+            </top>
+            <center>
+                <TableView fx:id="tableView">
+                    <columns>
+                        <TableColumn fx:id="name">
+                            <text>
+                                <StringConfig fx:constant="NAME_COLUMN"/>
+                            </text>
+                        </TableColumn>
+                        <TableColumn  fx:id="createDate">
+                            <text>
+                                <StringConfig fx:constant="CREATE_DATE_COLUMN"/>
+                            </text>
+                        </TableColumn>
+                        <TableColumn fx:id="refreshCopyAction" styleClass="refreshActionColumn"
+                                     sortable="false">
+                        </TableColumn>
+                    </columns>
+                </TableView>
+            </center>
+
+</BorderPane>
