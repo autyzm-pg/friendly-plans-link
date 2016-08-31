@@ -5,11 +5,10 @@ import se.vidstige.jadb.JadbDevice;
 import se.vidstige.jadb.JadbException;
 import se.vidstige.jadb.RemoteFile;
 
+import java.io.File;
 import java.io.IOException;
 
 public class FileRestorer implements Restorer {
-
-    private final String DB_NAME = "comments2.db";
 
     @Override
     public void restoreBackupToDevice(String backupName, JadbDevice device) {

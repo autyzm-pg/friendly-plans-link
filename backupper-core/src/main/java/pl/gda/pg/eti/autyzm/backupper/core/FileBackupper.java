@@ -48,7 +48,7 @@ public class FileBackupper implements Backupper {
     }
 
     public static File getBackupDatabase(String backupName) {
-        return new File(DATA_FOLDER, backupName + File.separator + "comments2.db");
+        return new File(DATA_FOLDER, backupName + File.separator + "commments2.db");
     }
 
     /**
