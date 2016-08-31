@@ -4,16 +4,14 @@ import javafx.fxml.FXML;
 
 public class StringConfig {
 
-    public static final String CHOOSE_DEVICE_TO_DOWNLOAD = "Wybierz urządzenie do pobrania";
-    public static final String CHOOSE_DEVICE_TO_REFRESH = "Wybierz urządzenie do wysłania";
     public static final String APP_NAME = "Plan Link";
     public static final String REFRESH_BUTTON = "Przywróć";
-    public static final String COPY_CREATED_ALERT_TITLE = "Utworzono kopię";
-    public static final String COPY_CREATED_ALERT_BODY = "Utworzono kopię pomyślnie";
-    public static final String COPY_REFRESHED_ALERT_TITLE = "Odtworzono kopię";
-    public static final String COPY_REFRESHED_ALERT_BODY = "Odtworzono kopię pomyślnie";
-    public static final String COPY_MISSING_FIELDS_ALERT_BODY = "Nie zostały wypełnione wszystkie pola";
-    public static final String COPY_MISSING_FIELDS_ALERT_TITLE = "Nie zostały wypełnione wszystkie pola";
+    public static final String BACKUP_CREATED_ALERT_TITLE = "Utworzono kopię";
+    public static final String BACKUP_CREATED_ALERT_BODY = "Utworzono kopię pomyślnie";
+    public static final String COPY_RESTORED_ALERT_TITLE = "Odtworzono kopię";
+    public static final String COPY_RESTORED_ALERT_BODY = "Odtworzono kopię pomyślnie";
+    public static final String MISSING_FIELDS_ALERT_BODY = "Nie zostały wypełnione wszystkie pola";
+    public static final String MISSING_FIELDS_ALERT_TITLE = "Nie zostały wypełnione wszystkie pola";
     public static final String NO_CONNECTED_DEVICE_ALERT_TITLE = "Brak urządzenia";
     public static final String NO_CONNECTED_DEVICE_ALERT_BODY = "Nie wykryto żadnego urządzenia. Podłącz urządzenie do komputera.";
     public static final String LOOKING_FOR_DEVICES_ERROR_TITLE = "Błąd";
@@ -21,11 +19,10 @@ public class StringConfig {
     public static final String FAILED_TO_INIT_ADB_CONNECTION_TITLE = "Błąd połączenia z adb";
     public static final String FAILED_TO_INIT_ADB_CONNECTION_BODY = "Nie udało się połączyć z adb. Wyłącz program i spróbuj ponownie lub skontaktuj się z twórcą oprogramowania.";
 
-    @FXML public static final String MAKE_COPY = "Zrób kopię";
+    @FXML public static final String MAKE_BACKUP = "Zrób kopię";
     @FXML public static final String REFRESH_COPY = "Przywróć kopię";
-    @FXML public static final String CHOOSE_DEVICE = "Wybierz urządzenie";
-    @FXML public static final String NO_CHOSEN_DEVICE = "Brak wybranego urządzenia";
     @FXML public static final String NAME_COLUMN = "Nazwa";
     @FXML public static final String CREATE_DATE_COLUMN = "Data utworzenia";
+    @FXML public static final String DEVICE_COLUMN = "Urządzenia";
     @FXML public static final String COPY_INPUT_NAME_LABEL = "Nazwa kopii: ";
 }
