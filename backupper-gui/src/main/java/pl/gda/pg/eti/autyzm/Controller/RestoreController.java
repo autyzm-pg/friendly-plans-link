@@ -20,10 +20,10 @@ import java.util.List;
 public class RestoreController extends BaseController {
 
     private static final double CREATE_DATE_COLUMN_WIDTH = 0.3;
-    private static final double REFRESH_COPY_COLUMN_WIDTH = 0.2;
+    private static final double RESTORE_COPY_COLUMN_WIDTH = 0.2;
     private static final double NAME_COLUMN_WIDTH = 0.5;
 
-    private static final double DEVICE_COLUMN_WIDTH = 0.9;
+    private static final double DEVICE_NAME_COLUMN_WIDTH = 0.9;
     private static final double CHOOSE_DEVICE_COLUMN_WIDTH = 0.1;
     private static final double MAX_TABLE_HEIGHT = 100.0;
 
@@ -74,7 +74,7 @@ public class RestoreController extends BaseController {
         restoreCopyColumn.setCellValueFactory(
                 cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
         restoreCopyColumn.setCellFactory(
-                cellData -> new RefreshButtonCell());
+                cellData -> new RestoreButtonCell());
         deviceNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
         chooseDeviceColumn.setCellValueFactory(
                 cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
@@ -85,21 +85,21 @@ public class RestoreController extends BaseController {
     private void setColumnWidth() {
         copyNameColumn.prefWidthProperty().bind(copiesTableView.widthProperty().multiply(NAME_COLUMN_WIDTH));
         copyCreateDateColumn.prefWidthProperty().bind(copiesTableView.widthProperty().multiply(CREATE_DATE_COLUMN_WIDTH));
-        restoreCopyColumn.prefWidthProperty().bind(copiesTableView.widthProperty().multiply(REFRESH_COPY_COLUMN_WIDTH));
+        restoreCopyColumn.prefWidthProperty().bind(copiesTableView.widthProperty().multiply(RESTORE_COPY_COLUMN_WIDTH));
 
         devicesTableView.setPrefWidth(Config.SCENE_WIDTH);
-        deviceNameColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(DEVICE_COLUMN_WIDTH));
+        deviceNameColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(DEVICE_NAME_COLUMN_WIDTH));
         chooseDeviceColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(CHOOSE_DEVICE_COLUMN_WIDTH));
         devicesTableView.setMaxHeight(MAX_TABLE_HEIGHT);
     }
 
-    private class RefreshButtonCell extends TableCell<DeviceCopy, Boolean> {
-        final Button refreshButton = new Button(StringConfig.REFRESH_BUTTON);
+    private class RestoreButtonCell extends TableCell<DeviceCopy, Boolean> {
+        final Button restoreButton = new Button(StringConfig.REFRESH_BUTTON);
 
-        RefreshButtonCell(){
-            refreshButton.setOnAction(action -> {
+        RestoreButtonCell(){
+            restoreButton.setOnAction(action -> {
                 if(selectedDevice != null) {
-                    Info.showAlert(StringConfig.COPY_REFRESHED_ALERT_TITLE, StringConfig.COPY_REFRESHED_ALERT_BODY,
+                    Info.showAlert(StringConfig.COPY_RESTORED_ALERT_TITLE, StringConfig.COPY_RESTORED_ALERT_BODY,
                             null, Alert.AlertType.INFORMATION);
                 }
                 else{
@@ -113,7 +113,7 @@ public class RestoreController extends BaseController {
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
             if(!empty){
-                setGraphic(refreshButton);
+                setGraphic(restoreButton);
             }
         }
     }

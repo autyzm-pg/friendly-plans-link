@@ -12,7 +12,7 @@
             <tabs>
                 <Tab closable="false">
                     <text>
-                        <StringConfig fx:constant="MAKE_COPY"/>
+                        <StringConfig fx:constant="MAKE_BACKUP"/>
                     </text>
                     <content>
                         <fx:include source="backup.fxml"/>

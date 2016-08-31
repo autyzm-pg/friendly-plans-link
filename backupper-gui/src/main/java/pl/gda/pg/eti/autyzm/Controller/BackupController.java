@@ -17,13 +17,11 @@ import se.vidstige.jadb.JadbDevice;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by malgorzatas on 30/08/16.
- */
+
 public class BackupController extends BaseController {
 
     private static final double DEVICE_COLUMN_WIDTH = 0.7;
-    private static final double MAKE_COPY_COLUMN_WIDTH = 0.3;
+    private static final double BACKUP_COLUMN_WIDTH = 0.3;
 
     @FXML private TextField nameInput;
     @FXML private TableView<JadbDevice> deviceTableView;
@@ -35,7 +33,6 @@ public class BackupController extends BaseController {
 
     @FXML
     public void initialize() {
-
         setDataBindings();
         setColumnWidth();
         deviceTableView.setItems(this.devices);
@@ -68,21 +65,21 @@ public class BackupController extends BaseController {
         backupColumn.setCellValueFactory(
                 cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
         backupColumn.setCellFactory(
-                cellData -> new MakeCopyButtonCell());
+                cellData -> new BackupButtonCell());
     }
 
     private void setColumnWidth() {
         deviceTableView.setPrefWidth(Config.SCENE_WIDTH);
         deviceColumn.prefWidthProperty().bind(deviceTableView.widthProperty().multiply(DEVICE_COLUMN_WIDTH));
-        backupColumn.prefWidthProperty().bind(deviceTableView.widthProperty().multiply(MAKE_COPY_COLUMN_WIDTH));
+        backupColumn.prefWidthProperty().bind(deviceTableView.widthProperty().multiply(BACKUP_COLUMN_WIDTH));
     }
 
-    private class MakeCopyButtonCell extends TableCell<JadbDevice, Boolean> {
-        final Button makeCopyButtonCell = new Button(StringConfig.MAKE_COPY);
+    private class BackupButtonCell extends TableCell<JadbDevice, Boolean> {
+        final Button backupButtonCell = new Button(StringConfig.MAKE_BACKUP);
 
-        MakeCopyButtonCell(){
+        BackupButtonCell(){
 
-            makeCopyButtonCell.setOnAction(action -> {
+            backupButtonCell.setOnAction(action -> {
                 try{
                     if(!nameInput.getText().isEmpty()) {
 
@@ -90,7 +87,7 @@ public class BackupController extends BaseController {
                         JadbDevice selectedDevice = devices.get(this.getIndex());
                         backupper.makeBackup(nameInput.getText(), selectedDevice);
 
-                        Info.showAlert(StringConfig.COPY_CREATED_ALERT_TITLE, StringConfig.COPY_CREATED_ALERT_BODY,
+                        Info.showAlert(StringConfig.BACKUP_CREATED_ALERT_TITLE, StringConfig.BACKUP_CREATED_ALERT_BODY,
                              null, Alert.AlertType.INFORMATION);
                     }
                     else{
@@ -112,7 +109,7 @@ public class BackupController extends BaseController {
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
             if(!empty){
-                setGraphic(makeCopyButtonCell);
+                setGraphic(backupButtonCell);
             }
         }
     }
