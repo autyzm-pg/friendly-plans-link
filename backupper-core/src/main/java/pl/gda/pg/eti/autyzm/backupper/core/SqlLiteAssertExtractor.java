@@ -55,6 +55,7 @@ public class SqlLiteAssertExtractor implements AssertExtractor<File> {
 
             return Stream.of(activityMedia, actionMedia, settingsMedia)
                     .flatMap(Collection::stream)
+                    .distinct()
                     .collect(Collectors.toList());
 
         } catch (Exception e) {
