@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by malgorzatas on 30/08/16.
- */
+
 public abstract class BaseController {
 
 

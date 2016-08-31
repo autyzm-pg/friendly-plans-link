@@ -14,9 +14,7 @@ import pl.gda.pg.eti.autyzm.StringConfig;
 import se.vidstige.jadb.JadbDevice;
 import java.util.List;
 
-/**
- * Created by malgorzatas on 30/08/16.
- */
+
 public class RestoreController extends BaseController {
 
     private static final double CREATE_DATE_COLUMN_WIDTH = 0.3;
