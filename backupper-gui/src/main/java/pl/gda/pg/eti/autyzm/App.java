@@ -12,6 +12,9 @@ public class App extends Application
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Runtime runtime = Runtime.getRuntime();
+        runtime.exec("adb shell");
+
         Parent root = FXMLLoader.load(getClass().getResource(Config.MAIN_FXML_PATH));
         primaryStage.getIcons().add(new Image(Config.LOGO_PATH));
         primaryStage.setTitle(StringConfig.APP_NAME);
