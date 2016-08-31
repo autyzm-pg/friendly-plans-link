@@ -7,9 +7,7 @@ import javafx.beans.property.StringProperty;
 
 import java.time.LocalDate;
 
-/**
- * Created by Gosia on 2016-06-27.
- */
+
 public class DeviceCopy {
 
     public final StringProperty name;
