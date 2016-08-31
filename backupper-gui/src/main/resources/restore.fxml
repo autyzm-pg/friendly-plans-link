@@ -7,11 +7,11 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<BorderPane styleClass="refreshTab" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane styleClass="restoreTab" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.gda.pg.eti.autyzm.Controller.RestoreController">
 
             <top>
-                <HBox styleClass="chooseDeviceArea">
+                <HBox styleClass="deviceArea">
 
                     <Button onAction="#refreshDeviceList">
                         <graphic>
@@ -23,33 +23,33 @@
                         </graphic>
                     </Button>
 
-                    <TableView fx:id="deviceToRefreshTableView">
+                    <TableView fx:id="devicesTableView">
                         <columns>
-                            <TableColumn fx:id="deviceToRefresh">
+                            <TableColumn fx:id="deviceNameColumn">
                                 <text>
                                     <StringConfig fx:constant="DEVICE_COLUMN"/>
                                 </text>
                             </TableColumn>
-                            <TableColumn fx:id="chooseDeviceToRefresh" sortable="false">
+                            <TableColumn fx:id="chooseDeviceColumn" sortable="false">
                             </TableColumn>
                         </columns>
                     </TableView>
                 </HBox>
             </top>
             <center>
-                <TableView fx:id="tableView">
+                <TableView fx:id="copiesTableView">
                     <columns>
-                        <TableColumn fx:id="name">
+                        <TableColumn fx:id="copyNameColumn">
                             <text>
                                 <StringConfig fx:constant="NAME_COLUMN"/>
                             </text>
                         </TableColumn>
-                        <TableColumn  fx:id="createDate">
+                        <TableColumn  fx:id="copyCreateDateColumn">
                             <text>
                                 <StringConfig fx:constant="CREATE_DATE_COLUMN"/>
                             </text>
                         </TableColumn>
-                        <TableColumn fx:id="refreshCopyAction" styleClass="refreshActionColumn"
+                        <TableColumn fx:id="restoreCopyColumn" styleClass="restoreActionColumn"
                                      sortable="false">
                         </TableColumn>
                     </columns>

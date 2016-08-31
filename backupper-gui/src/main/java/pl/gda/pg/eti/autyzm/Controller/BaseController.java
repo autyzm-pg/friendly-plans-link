@@ -1,6 +1,7 @@
 package pl.gda.pg.eti.autyzm.Controller;
 
-import pl.gda.pg.eti.autyzm.Model.Info;
+import javafx.scene.control.Alert;
+import pl.gda.pg.eti.autyzm.Info;
 import pl.gda.pg.eti.autyzm.StringConfig;
 import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
 import se.vidstige.jadb.JadbDevice;
@@ -15,12 +16,13 @@ import java.util.List;
  */
 public abstract class BaseController {
 
+
     protected List<JadbDevice> getConnectedDevices() {
         try {
             return AdbProxy.getConnectedDevices();
         } catch (IOException | JadbException e) {
             Info.showAlert(StringConfig.LOOKING_FOR_DEVICES_ERROR_TITLE, StringConfig.LOOKING_FOR_DEVICES_ERROR_BODY,
-                    null, Info.TYPE.ERROR);
+                    null, Alert.AlertType.ERROR);
             e.printStackTrace();
             return new ArrayList<>();
         }

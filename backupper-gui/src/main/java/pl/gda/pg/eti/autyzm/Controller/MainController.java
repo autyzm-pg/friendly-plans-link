@@ -1,7 +1,8 @@
 package pl.gda.pg.eti.autyzm.Controller;
 
 import javafx.fxml.FXML;
-import pl.gda.pg.eti.autyzm.Model.Info;
+import javafx.scene.control.Alert;
+import pl.gda.pg.eti.autyzm.Info;
 import pl.gda.pg.eti.autyzm.StringConfig;
 import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
 
@@ -18,13 +19,8 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
             Info.showAlert(StringConfig.FAILED_TO_INIT_ADB_CONNECTION_TITLE, StringConfig.FAILED_TO_INIT_ADB_CONNECTION_BODY,
-                    null, Info.TYPE.ERROR);
+                    null, Alert.AlertType.ERROR);
         }
     }
-
-    @FXML
-    public void initialize() {
-    }
-
 
 }

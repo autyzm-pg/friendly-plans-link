@@ -12,8 +12,8 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.gda.pg.eti.autyzm.Controller.BackupController">
 <center>
-<VBox styleClass="copyTab">
-    <VBox styleClass="copyNameInputArea">
+<VBox styleClass="backupTab">
+    <VBox styleClass="backupNameInputArea">
         <Label>
             <StringConfig fx:constant="COPY_INPUT_NAME_LABEL"/>
         </Label>
@@ -29,15 +29,15 @@
                 </ImageView>
             </graphic>
         </Button>
-        <HBox styleClass="chooseDeviceArea">
+        <HBox styleClass="deviceArea">
             <TableView fx:id="deviceTableView">
                 <columns>
-                    <TableColumn fx:id="device">
+                    <TableColumn fx:id="deviceColumn">
                         <text>
                             <StringConfig fx:constant="DEVICE_COLUMN"/>
                         </text>
                     </TableColumn>
-                    <TableColumn fx:id="chooseDevice" sortable="false">
+                    <TableColumn fx:id="backupColumn" sortable="false">
                     </TableColumn>
                 </columns>
             </TableView>
