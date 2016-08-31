@@ -1,5 +1,6 @@
 package pl.gda.pg.eti.autyzm.backupper.core;
 
+import org.apache.commons.io.FilenameUtils;
 import pl.gda.pg.eti.autyzm.backupper.api.Backup;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.api.BackupperException;
@@ -86,8 +87,10 @@ public class FileBackupper implements Backupper {
         SqlLiteAssertExtractor assertExtractor = new SqlLiteAssertExtractor();
         List<URI> uriList = assertExtractor.extractAsserts(fullPath);
         for (URI item : uriList) {
-            RemoteFile assetOnAndroid = new RemoteFile(item.getPath());
-            File pathToAssetOnPC = new File(DATA_FOLDER, backupName + File.separator + assetOnAndroid.getName());
+
+            String assetName = FilenameUtils.getName(item.getPath());
+            RemoteFile assetOnAndroid = new RemoteFile(item.getPath().replace("emulated/0","sdcard0"));
+            File pathToAssetOnPC = new File(DATA_FOLDER, backupName + File.separator + assetName);
             try {
                 device.pull(assetOnAndroid, pathToAssetOnPC);
             } catch (IOException | JadbException e) {
