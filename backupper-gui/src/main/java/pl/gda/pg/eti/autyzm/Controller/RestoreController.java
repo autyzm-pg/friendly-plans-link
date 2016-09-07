@@ -48,9 +48,6 @@ public class RestoreController extends BaseController {
         setDataBindings();
         setColumnWidth();
 
-        //mock for tests
-        copies.add(new DeviceCopy("proba-restore", LocalDate.now()));
-
         copiesTableView.setItems(copies);
         devicesTableView.setItems(devices);
 
