@@ -18,6 +18,8 @@ public class StringConfig {
     public static final String LOOKING_FOR_DEVICES_ERROR_BODY = "W trakcie wykrywania podłączonych urządzeń wystąpił błąd. Skontaktuj się z twórcą oprogramowania.";
     public static final String FAILED_TO_INIT_ADB_CONNECTION_TITLE = "Błąd połączenia z adb";
     public static final String FAILED_TO_INIT_ADB_CONNECTION_BODY = "Nie udało się połączyć z adb. Wyłącz program i spróbuj ponownie lub skontaktuj się z twórcą oprogramowania.";
+    public static final String FILED_TO_INIT_ADB_HEADER = "Błąd uruchomienia serwera ADB";
+    public static final String FILED_TO_INIT_ADB_BODY = "Skontaktuj się z twórcą oprogramowania.";
 
     @FXML public static final String MAKE_BACKUP = "Zrób kopię";
     @FXML public static final String REFRESH_COPY = "Przywróć kopię";
