@@ -24,15 +24,12 @@ public class FileBackupper implements Backupper {
             DATA_FOLDER.mkdir();
     }
 
-    private final String PATH_TO_DB = "/storage/sdcard0/commments2.db";
-    private final String DB_NAME = "commments2.db";
-
 
     @Override
     public void makeBackup(String backupName, JadbDevice device) throws BackupperException {
         try {
             createBackupFolder(backupName);
-            copyDbFromDevice(device, PATH_TO_DB, backupName);
+            copyDbFromDevice(device, Config.PATH_TO_DB, backupName);
             copyAssetsFromDevice(device, backupName);
         } catch (IOException e) {
             throw new BackupperException(e);
@@ -47,6 +44,10 @@ public class FileBackupper implements Backupper {
     @Override
     public Optional<Backup> getBackup(String backupName) throws BackupperException {
         return null;
+    }
+
+    public static File getBackupDatabase(String backupName) {
+        return new File(DATA_FOLDER, backupName + File.separator + "commments2.db");
     }
 
     /**
@@ -82,7 +83,7 @@ public class FileBackupper implements Backupper {
 
     private void copyAssetsFromDevice(JadbDevice device, String backupName) throws IOException {
 
-        File fullPath = new File(DATA_FOLDER, backupName + File.separator + DB_NAME);
+        File fullPath = new File(DATA_FOLDER, backupName + File.separator + Config.DB_NAME);
 
         SqlLiteAssertExtractor assertExtractor = new SqlLiteAssertExtractor();
         List<URI> uriList = assertExtractor.extractAsserts(fullPath);

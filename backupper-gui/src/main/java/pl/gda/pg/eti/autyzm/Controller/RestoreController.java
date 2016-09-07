@@ -11,7 +11,11 @@ import pl.gda.pg.eti.autyzm.Config;
 import pl.gda.pg.eti.autyzm.DeviceCopy;
 import pl.gda.pg.eti.autyzm.Info;
 import pl.gda.pg.eti.autyzm.StringConfig;
+import pl.gda.pg.eti.autyzm.backupper.api.Restorer;
+import pl.gda.pg.eti.autyzm.backupper.core.FileRestorer;
 import se.vidstige.jadb.JadbDevice;
+
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -37,6 +41,7 @@ public class RestoreController extends BaseController {
     private JadbDevice selectedDevice = null;
     private ObservableList<JadbDevice> devices = FXCollections.observableArrayList();
     private ObservableList<DeviceCopy> copies = FXCollections.observableArrayList();
+
 
     @FXML
     public void initialize() {
@@ -97,6 +102,9 @@ public class RestoreController extends BaseController {
         RestoreButtonCell(){
             restoreButton.setOnAction(action -> {
                 if(selectedDevice != null) {
+                    String backupName = copiesTableView.getItems().get(this.getIndex()).getName();
+                    Restorer restorer = new FileRestorer();
+                    restorer.restoreBackupToDevice(backupName, selectedDevice);
                     Info.showAlert(StringConfig.COPY_RESTORED_ALERT_TITLE, StringConfig.COPY_RESTORED_ALERT_BODY,
                             null, Alert.AlertType.INFORMATION);
                 }
