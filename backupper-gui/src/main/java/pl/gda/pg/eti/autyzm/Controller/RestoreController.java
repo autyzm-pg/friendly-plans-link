@@ -12,9 +12,13 @@ import pl.gda.pg.eti.autyzm.DeviceCopy;
 import pl.gda.pg.eti.autyzm.Info;
 import pl.gda.pg.eti.autyzm.StringConfig;
 import pl.gda.pg.eti.autyzm.backupper.api.Restorer;
+import pl.gda.pg.eti.autyzm.backupper.core.BackupLink;
 import pl.gda.pg.eti.autyzm.backupper.core.FileRestorer;
 import se.vidstige.jadb.JadbDevice;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -47,6 +51,8 @@ public class RestoreController extends BaseController {
     public void initialize() {
         setDataBindings();
         setColumnWidth();
+
+        populate();
 
         copiesTableView.setItems(copies);
         devicesTableView.setItems(devices);
@@ -94,6 +100,19 @@ public class RestoreController extends BaseController {
         deviceNameColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(DEVICE_NAME_COLUMN_WIDTH));
         chooseDeviceColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(CHOOSE_DEVICE_COLUMN_WIDTH));
         devicesTableView.setMaxHeight(MAX_TABLE_HEIGHT);
+    }
+
+    // initialization of the list
+    public void populate(){
+        // ...
+        Path currentDirectory = Paths.get(".", "data");
+        File folderName = new File(currentDirectory.toString());
+        String[] folders = folderName.list();
+        copies.clear();
+        for (String s : folders){
+            copies.add(new DeviceCopy(s,null));
+        }
+
     }
 
     private class RestoreButtonCell extends TableCell<DeviceCopy, Boolean> {

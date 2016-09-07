@@ -1,5 +1,6 @@
 package pl.gda.pg.eti.autyzm.backupper.core;
 
+import javax.swing.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +20,12 @@ public class BackupLink {
     private LocalDateTime dateOfCreation;
 
     private Path pathToFolder;
+
+    public BackupLink(){}
+
+    public BackupLink(String name){
+        this.setName(name);
+    }
 
     public Path getPathToFolder() {
         return pathToFolder;
@@ -52,9 +59,5 @@ public class BackupLink {
         BackupLink.listOfLocalBuckups.add(backupLink);
     }
 
-    // initialization of the list
-    public static void populate(){
-        // ...
-        Path currentDirectory = Paths.get(".", "data");
-    }
+
 }
