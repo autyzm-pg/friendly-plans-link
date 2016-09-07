@@ -23,14 +23,12 @@ public class FileBackupper implements Backupper {
             DATA_FOLDER.mkdir();
     }
 
-    private final String PATH_TO_DB =  "/storage/sdcard0/commments2.db";
-
 
     @Override
     public void makeBackup(String backupName, JadbDevice device) throws BackupperException {
         try {
             createBackupFolder(backupName);
-            copyFromDevice(device, PATH_TO_DB, backupName);
+            copyFromDevice(device, Config.PATH_TO_DB, backupName);
         } catch (IOException e) {
             throw new BackupperException(e);
         }
