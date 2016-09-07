@@ -61,8 +61,9 @@ public class RestoreController extends BaseController {
     }
 
     @FXML
-    public void refreshDeviceList(ActionEvent actionEvent) {
+    public void refreshView(ActionEvent actionEvent) {
         showConnectedDevices(false);
+        populate();
     }
 
     private void showConnectedDevices(Boolean appStart) {
@@ -160,4 +161,6 @@ public class RestoreController extends BaseController {
             }
         }
     }
+
+
 }
