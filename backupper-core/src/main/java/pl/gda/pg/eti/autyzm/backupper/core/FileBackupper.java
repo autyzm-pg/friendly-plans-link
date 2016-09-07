@@ -1,5 +1,6 @@
 package pl.gda.pg.eti.autyzm.backupper.core;
 
+import org.apache.commons.io.FilenameUtils;
 import pl.gda.pg.eti.autyzm.backupper.api.Backup;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.api.BackupperException;
@@ -23,18 +24,19 @@ public class FileBackupper implements Backupper {
             DATA_FOLDER.mkdir();
     }
 
-    private final String PATH_TO_DB =  "/storage/sdcard0/commments2.db";
+    private final String PATH_TO_DB = "/storage/sdcard0/commments2.db";
+    private final String DB_NAME = "commments2.db";
 
 
     @Override
     public void makeBackup(String backupName, JadbDevice device) throws BackupperException {
         try {
             createBackupFolder(backupName);
-            copyFromDevice(device, PATH_TO_DB, backupName);
+            copyDbFromDevice(device, PATH_TO_DB, backupName);
+            copyAssetsFromDevice(device, backupName);
         } catch (IOException e) {
             throw new BackupperException(e);
         }
-
     }
 
     @Override
@@ -49,6 +51,7 @@ public class FileBackupper implements Backupper {
 
     /**
      * Creates new backup folder in {@link FileBackupper#DATA_FOLDER}.
+     *
      * @param backupName name of backup directory - alias for backup
      * @throws IOException
      */
@@ -60,12 +63,12 @@ public class FileBackupper implements Backupper {
     /**
      * Copies file from specified device via ADB
      *
-     * @param device adb-enabled device to copy from
-     * @param copyFrom source file patch
+     * @param device     adb-enabled device to copy from
+     * @param copyFrom   source file patch
      * @param backupName destination backup name
      * @throws IOException if method fails to copy file
      */
-    private void copyFromDevice(JadbDevice device, String copyFrom, String backupName) throws IOException {
+    private void copyDbFromDevice(JadbDevice device, String copyFrom, String backupName) throws IOException {
         try {
             String copyFromFileName = Paths.get(new URI(copyFrom).getPath()).getFileName().toString();
             File fullPath = new File(DATA_FOLDER, backupName + File.separator + copyFromFileName);
@@ -74,6 +77,26 @@ public class FileBackupper implements Backupper {
             throw new IllegalArgumentException("Bad copyFrom path", e);
         } catch (JadbException e) {
             throw new IOException("Failed to pull file from device", e);
+        }
+    }
+
+    private void copyAssetsFromDevice(JadbDevice device, String backupName) throws IOException {
+
+        File fullPath = new File(DATA_FOLDER, backupName + File.separator + DB_NAME);
+
+        SqlLiteAssertExtractor assertExtractor = new SqlLiteAssertExtractor();
+        List<URI> uriList = assertExtractor.extractAsserts(fullPath);
+        for (URI item : uriList) {
+
+            String assetName = FilenameUtils.getName(item.getPath());
+            RemoteFile assetOnAndroid = new RemoteFile(item.getPath().replace("emulated/0","sdcard0"));
+            File pathToAssetOnPC = new File(DATA_FOLDER, backupName + File.separator + assetName);
+            try {
+                device.pull(assetOnAndroid, pathToAssetOnPC);
+            } catch (IOException | JadbException e) {
+                throw new IOException("Failed to pull assets from device", e);
+            }
+
         }
     }
 }
