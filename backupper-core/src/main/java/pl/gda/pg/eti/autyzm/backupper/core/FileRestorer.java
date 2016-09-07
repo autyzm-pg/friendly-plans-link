@@ -19,6 +19,7 @@ public class FileRestorer implements Restorer {
     public void restoreBackupToDevice(String backupName, JadbDevice device) {
         try {
             device.push(FileBackupper.getBackupDatabase(backupName), new RemoteFile(Config.PATH_TO_DB));
+            restoreAssetsToDevice(backupName, device);
         } catch (IOException | JadbException e) {
             e.printStackTrace();
         }
