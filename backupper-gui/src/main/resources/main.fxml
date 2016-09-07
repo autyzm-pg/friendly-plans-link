@@ -26,6 +26,14 @@
                         <fx:include source="restore.fxml"/>
                     </content>
                 </Tab>
+                <Tab closable="false">
+                    <text>
+                        <StringConfig fx:constant="ACTIVITY_LIST"/>
+                    </text>
+                    <content>
+                        <fx:include source="activities.fxml"/>
+                    </content>
+                </Tab>
             </tabs>
         </TabPane>
     </center>
