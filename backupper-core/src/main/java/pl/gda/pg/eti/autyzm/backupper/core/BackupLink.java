@@ -2,11 +2,14 @@ package pl.gda.pg.eti.autyzm.backupper.core;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * Created by marcin on 2016-08-31.
  */
 public class BackupLink {
+
+    static ArrayList<BackupLink> listOfLocalBuckups;
 
     private String name;
 
@@ -36,5 +39,19 @@ public class BackupLink {
 
     public void setDateOfCreation(LocalDateTime dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
+    }
+
+    public void listOfLocalBuckups_Clear(){
+        BackupLink.listOfLocalBuckups.clear();
+    }
+
+    public void listOfLocalBuckups_Add(BackupLink backupLink){
+        BackupLink.listOfLocalBuckups.add(backupLink);
+    }
+
+    // initialization of the list
+    public static void populate(){
+        // ...
+        Path currentDirectory = new Path("./data");
     }
 }
