@@ -1,8 +1,11 @@
 package pl.gda.pg.eti.autyzm.backupper.core;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.PrimitiveIterator;
 
 /**
  * Created by marcin on 2016-08-31.
@@ -52,6 +55,6 @@ public class BackupLink {
     // initialization of the list
     public static void populate(){
         // ...
-        Path currentDirectory = new Path("./data");
+        Path currentDirectory = Paths.get(".", "data");
     }
 }
