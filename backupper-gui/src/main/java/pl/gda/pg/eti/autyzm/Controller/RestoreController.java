@@ -15,7 +15,9 @@ import pl.gda.pg.eti.autyzm.backupper.api.Restorer;
 import pl.gda.pg.eti.autyzm.backupper.core.FileRestorer;
 import se.vidstige.jadb.JadbDevice;
 
-import java.time.LocalDate;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 
@@ -28,6 +30,8 @@ public class RestoreController extends BaseController {
     private static final double DEVICE_NAME_COLUMN_WIDTH = 0.9;
     private static final double CHOOSE_DEVICE_COLUMN_WIDTH = 0.1;
     private static final double MAX_TABLE_HEIGHT = 100.0;
+
+    private static final String CURRENT_DIRECTORY_NAME = "data";
 
     @FXML private TableView<DeviceCopy> copiesTableView;
     @FXML private TableColumn<DeviceCopy, String> copyNameColumn;
@@ -48,6 +52,8 @@ public class RestoreController extends BaseController {
         setDataBindings();
         setColumnWidth();
 
+        populate();
+
         copiesTableView.setItems(copies);
         devicesTableView.setItems(devices);
 
@@ -55,8 +61,9 @@ public class RestoreController extends BaseController {
     }
 
     @FXML
-    public void refreshDeviceList(ActionEvent actionEvent) {
+    public void refreshView(ActionEvent actionEvent) {
         showConnectedDevices(false);
+        populate();
     }
 
     private void showConnectedDevices(Boolean appStart) {
@@ -94,6 +101,17 @@ public class RestoreController extends BaseController {
         deviceNameColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(DEVICE_NAME_COLUMN_WIDTH));
         chooseDeviceColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(CHOOSE_DEVICE_COLUMN_WIDTH));
         devicesTableView.setMaxHeight(MAX_TABLE_HEIGHT);
+    }
+
+    public void populate(){
+        Path pathToDataDirectory = Paths.get(".", CURRENT_DIRECTORY_NAME);
+        File dataDirectory = new File(pathToDataDirectory.toString());
+        String[] copiesNames = dataDirectory.list();
+        copies.clear();
+        for (String copyName : copiesNames){
+            copies.add(new DeviceCopy(copyName, null));
+        }
+
     }
 
     private class RestoreButtonCell extends TableCell<DeviceCopy, Boolean> {
@@ -141,4 +159,6 @@ public class RestoreController extends BaseController {
             }
         }
     }
+
+
 }
