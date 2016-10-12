@@ -22,7 +22,21 @@
         <dependency>
             <groupId>pl.gda.pg.eti.autyzm</groupId>
             <artifactId>backupper-core</artifactId>
-            <version>0.1</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>pl.gda.pg.eti.autyzm.App</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

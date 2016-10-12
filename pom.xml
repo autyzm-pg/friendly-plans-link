@@ -22,6 +22,7 @@
         <dep.jdbc.sqllite.ver>3.8.11.2</dep.jdbc.sqllite.ver>
         <dep.test.junit.ver>4.11</dep.test.junit.ver>
         <dep.jadb.ver>master-v1.0-gf362563-41</dep.jadb.ver>
+        <dep.plg.maven-assembly.ver>2.6</dep.plg.maven-assembly.ver>
     </properties>
 
     <repositories>
@@ -60,4 +61,29 @@
         <module>backupper-core</module>
         <module>backupper-gui</module>
     </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${dep.plg.maven-assembly.ver}</version>
+                    <configuration>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>make-assembly</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
