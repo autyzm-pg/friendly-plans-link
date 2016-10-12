@@ -111,6 +111,7 @@ public class RestoreController extends BaseController {
         for (String copyName : copiesNames){
             copies.add(new DeviceCopy(copyName, null));
         }
+        copiesTableView.refresh();
 
     }
 
