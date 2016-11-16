@@ -8,6 +8,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.nio.file.FileSystems;
+
 
 public class App extends Application
 {
@@ -16,7 +18,10 @@ public class App extends Application
     public void start(Stage primaryStage) throws Exception {
 
         try {
-            Runtime.getRuntime().exec("adb start-server");
+
+            String directorySeparator = FileSystems.getDefault().getSeparator();
+            String pathToLocalAdb = System.getProperty("user.dir") + directorySeparator + "adb";
+            Runtime.getRuntime().exec(pathToLocalAdb + " start-server");
         }
         catch (Exception exception){
             Info.showAlert(StringConfig.FILED_TO_INIT_ADB_HEADER, StringConfig.FILED_TO_INIT_ADB_BODY,

@@ -21,7 +21,6 @@ public abstract class BaseController {
         } catch (IOException | JadbException e) {
             Info.showAlert(StringConfig.LOOKING_FOR_DEVICES_ERROR_TITLE, StringConfig.LOOKING_FOR_DEVICES_ERROR_BODY,
                     null, Alert.AlertType.ERROR);
-            e.printStackTrace();
             return new ArrayList<>();
         }
     }

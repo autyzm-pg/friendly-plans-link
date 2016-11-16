@@ -1,6 +1,5 @@
 package pl.gda.pg.eti.autyzm.Controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import pl.gda.pg.eti.autyzm.Info;
@@ -18,7 +17,6 @@ public class MainController {
         try {
             AdbProxy.initAdbConnection();
         } catch (IOException e) {
-            e.printStackTrace();
             Info.showAlert(StringConfig.FAILED_TO_INIT_ADB_CONNECTION_TITLE, StringConfig.FAILED_TO_INIT_ADB_CONNECTION_BODY,
                     null, Alert.AlertType.ERROR);
         }
