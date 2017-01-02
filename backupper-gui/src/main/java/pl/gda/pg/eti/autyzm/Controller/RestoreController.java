@@ -67,14 +67,14 @@ public class RestoreController extends BaseController {
     }
 
     private void showConnectedDevices(Boolean appStart) {
-        List connectedDevices = getConnectedDevices();
+        List<JadbDevice> connectedDevices = getConnectedDevices();
+        devices.clear();
 
-        if(connectedDevices.isEmpty() && !appStart) {
+        if (connectedDevices.isEmpty() && !appStart) {
             Info.showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
                     null, Alert.AlertType.WARNING);
-        }
-        devices.clear();
-        devices.addAll(connectedDevices);
+        } else devices.addAll(connectedDevices);
+
         devicesTableView.refresh();
     }
 
@@ -103,16 +103,19 @@ public class RestoreController extends BaseController {
         devicesTableView.setMaxHeight(MAX_TABLE_HEIGHT);
     }
 
-    public void populate(){
+    private void populate() {
         Path pathToDataDirectory = Paths.get(".", CURRENT_DIRECTORY_NAME);
         File dataDirectory = new File(pathToDataDirectory.toString());
         String[] copiesNames = dataDirectory.list();
         copies.clear();
-        for (String copyName : copiesNames){
-            copies.add(new DeviceCopy(copyName, null));
-        }
-        copiesTableView.refresh();
 
+        if (copiesNames != null) {
+            for (String copyName : copiesNames) {
+                copies.add(new DeviceCopy(copyName, null));
+            }
+        }
+
+        copiesTableView.refresh();
     }
 
     private class RestoreButtonCell extends TableCell<DeviceCopy, Boolean> {
@@ -120,17 +123,23 @@ public class RestoreController extends BaseController {
 
         RestoreButtonCell(){
             restoreButton.setOnAction(action -> {
-                if(selectedDevice != null) {
+                if (selectedDevice != null) {
                     String backupName = copiesTableView.getItems().get(this.getIndex()).getName();
                     Restorer restorer = new FileRestorer();
                     restorer.restoreBackupToDevice(backupName, selectedDevice);
-                    Info.showAlert(StringConfig.COPY_RESTORED_ALERT_TITLE, StringConfig.COPY_RESTORED_ALERT_BODY,
-                            null, Alert.AlertType.INFORMATION);
-                }
-                else{
-                    Info.showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
-                            null, Alert.AlertType.WARNING);
-                }
+
+                    Info.showAlert(
+                            StringConfig.COPY_RESTORED_ALERT_TITLE,
+                            StringConfig.COPY_RESTORED_ALERT_BODY,
+                            null,
+                            Alert.AlertType.INFORMATION
+                    );
+                } else Info.showAlert(
+                        StringConfig.MISSING_FIELDS_ALERT_TITLE,
+                        StringConfig.MISSING_FIELDS_ALERT_BODY,
+                        null,
+                        Alert.AlertType.WARNING
+                );
             });
         }
 

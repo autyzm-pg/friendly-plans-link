@@ -39,9 +39,9 @@ public class BackupController extends BaseController {
         showConnectedDevices(true);
     }
 
-    public void updateDevices(List devices){
+    private void updateDevices(List<JadbDevice> devices) {
         this.devices.clear();
-        this.devices.addAll(devices);
+        if (devices != null) this.devices.addAll(devices);
         this.deviceTableView.refresh();
     }
 
@@ -51,12 +51,13 @@ public class BackupController extends BaseController {
     }
 
     private void showConnectedDevices(Boolean appStart) {
-        List devices = getConnectedDevices();
+        List<JadbDevice> devices = getConnectedDevices();
 
-        if(devices.isEmpty() && !appStart) {
+        if (devices.isEmpty() && !appStart) {
             Info.showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
                     null, Alert.AlertType.WARNING);
         }
+
         updateDevices(devices);
     }
 
@@ -77,29 +78,35 @@ public class BackupController extends BaseController {
     private class BackupButtonCell extends TableCell<JadbDevice, Boolean> {
         final Button backupButtonCell = new Button(StringConfig.MAKE_BACKUP);
 
-        BackupButtonCell(){
-
+        BackupButtonCell() {
             backupButtonCell.setOnAction(action -> {
-                try{
-                    if(!nameInput.getText().isEmpty()) {
-
+                try {
+                    if (!nameInput.getText().isEmpty()) {
                         // TODO Check if copy already exists
                         JadbDevice selectedDevice = devices.get(this.getIndex());
                         backupper.makeBackup(nameInput.getText(), selectedDevice);
 
-                        Info.showAlert(StringConfig.BACKUP_CREATED_ALERT_TITLE, StringConfig.BACKUP_CREATED_ALERT_BODY,
-                             null, Alert.AlertType.INFORMATION);
-                    }
-                    else{
-                        Info.showAlert(StringConfig.MISSING_FIELDS_ALERT_TITLE, StringConfig.MISSING_FIELDS_ALERT_BODY,
-                                null, Alert.AlertType.WARNING);
-                    }
+                        Info.showAlert(
+                                StringConfig.BACKUP_CREATED_ALERT_TITLE,
+                                StringConfig.BACKUP_CREATED_ALERT_BODY,
+                                null,
+                                Alert.AlertType.INFORMATION
+                        );
+                    } else Info.showAlert(
+                            StringConfig.MISSING_FIELDS_ALERT_TITLE,
+                            StringConfig.MISSING_FIELDS_ALERT_BODY,
+                            null,
+                            Alert.AlertType.WARNING
+                    );
+                } catch (Exception ex) {
+                     Info.showAlert(
+                             StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE,
+                             StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
+                             null,
+                             Alert.AlertType.ERROR
+                     );
 
-                }
-                catch (Exception ex){
-                     Info.showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
-                             null, Alert.AlertType.ERROR);
-                     updateDevices(new ArrayList());
+                     updateDevices(new ArrayList<>());
                 }
 
             });

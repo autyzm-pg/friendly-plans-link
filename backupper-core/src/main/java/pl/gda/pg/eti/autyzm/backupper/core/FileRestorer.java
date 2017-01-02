@@ -29,8 +29,8 @@ public class FileRestorer implements Restorer {
         File fullPathToDB = new File(DATA_FOLDER, backupName + File.separator + Config.DB_NAME);
 
 
-        SqlLiteAssertExtractor assertExtractor = new SqlLiteAssertExtractor();
-        List<URI> uriList = assertExtractor.extractAsserts(fullPathToDB);
+        SqlLiteAssetExtractor assetExtractor = new SqlLiteAssetExtractor();
+        List<URI> uriList = assetExtractor.extractAssets(fullPathToDB);
         for (URI item : uriList) {
 
             String assetName = FilenameUtils.getName(item.getPath());

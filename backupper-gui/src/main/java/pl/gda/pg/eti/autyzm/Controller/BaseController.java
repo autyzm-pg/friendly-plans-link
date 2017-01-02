@@ -11,11 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public abstract class BaseController {
-
-
-    protected List<JadbDevice> getConnectedDevices() {
+abstract class BaseController {
+    List<JadbDevice> getConnectedDevices() {
         try {
             return AdbProxy.getConnectedDevices();
         } catch (IOException | JadbException e) {

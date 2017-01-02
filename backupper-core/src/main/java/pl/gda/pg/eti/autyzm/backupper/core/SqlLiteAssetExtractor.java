@@ -1,8 +1,8 @@
 package pl.gda.pg.eti.autyzm.backupper.core;
 
-import pl.gda.pg.eti.autyzm.backupper.api.AssertExtractor;
+import pl.gda.pg.eti.autyzm.backupper.api.AssetExtractor;
 import pl.gda.pg.eti.autyzm.backupper.api.BackupperException;
-import pl.gda.pg.eti.autyzm.backupper.api.AssertExtractorException;
+import pl.gda.pg.eti.autyzm.backupper.api.AssetExtractorException;
 
 import java.io.File;
 import java.net.URI;
@@ -21,7 +21,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SqlLiteAssertExtractor implements AssertExtractor<File> {
+public class SqlLiteAssetExtractor implements AssetExtractor<File> {
     private static final String ACTIVITY_TABLE_NAME = "AKTYWNOSC";
     private static final String[] ACTIVITY_COLUMN_NAMES = {"ICONPATH", "AUDIOPATH"};
 
@@ -40,7 +40,7 @@ public class SqlLiteAssertExtractor implements AssertExtractor<File> {
     }
 
     @Override
-    public List<URI> extractAsserts(File dbFile) {
+    public List<URI> extractAssets(File dbFile) {
         Objects.requireNonNull(dbFile, "dbFile arg is null");
 
         if (!dbFile.exists())
@@ -59,7 +59,7 @@ public class SqlLiteAssertExtractor implements AssertExtractor<File> {
                     .collect(Collectors.toList());
 
         } catch (Exception e) {
-            throw new AssertExtractorException("Failed to extract asserts", e);
+            throw new AssetExtractorException("Failed to extract assets", e);
         }
 
     }
@@ -97,7 +97,7 @@ public class SqlLiteAssertExtractor implements AssertExtractor<File> {
                         try {
                             paths.add(new URI(path));
                         } catch (URISyntaxException e) {
-                            throw new AssertExtractorException("Bad path found", e);
+                            throw new AssetExtractorException("Bad path found", e);
                         }
                     }
                 }

@@ -11,7 +11,7 @@
     <artifactId>backupper-core</artifactId>
     <packaging>jar</packaging>
 
-    <name>backupper-api</name>
+    <name>backupper-core</name>
 
     <dependencies>
         <dependency>

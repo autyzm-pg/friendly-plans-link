@@ -46,7 +46,7 @@ public class FileBackupper implements Backupper {
         return null;
     }
 
-    public static File getBackupDatabase(String backupName) {
+    static File getBackupDatabase(String backupName) {
         return new File(DATA_FOLDER, backupName + File.separator + "commments2.db");
     }
 
@@ -54,7 +54,7 @@ public class FileBackupper implements Backupper {
      * Creates new backup folder in {@link FileBackupper#DATA_FOLDER}.
      *
      * @param backupName name of backup directory - alias for backup
-     * @throws IOException
+     * @throws IOException on directory creation failure
      */
     private void createBackupFolder(String backupName) throws IOException {
         new File(DATA_FOLDER, backupName).mkdir();
@@ -85,10 +85,10 @@ public class FileBackupper implements Backupper {
 
         File fullPath = new File(DATA_FOLDER, backupName + File.separator + Config.DB_NAME);
 
-        SqlLiteAssertExtractor assertExtractor = new SqlLiteAssertExtractor();
-        List<URI> uriList = assertExtractor.extractAsserts(fullPath);
-        for (URI item : uriList) {
+        SqlLiteAssetExtractor assetExtractor = new SqlLiteAssetExtractor();
+        List<URI> uriList = assetExtractor.extractAssets(fullPath);
 
+        for (URI item : uriList) {
             String assetName = FilenameUtils.getName(item.getPath());
             RemoteFile assetOnAndroid = new RemoteFile(item.getPath().replace("emulated/0","sdcard0"));
             File pathToAssetOnPC = new File(DATA_FOLDER, backupName + File.separator + assetName);
