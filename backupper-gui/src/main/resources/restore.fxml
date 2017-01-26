@@ -12,43 +12,43 @@
 <BorderPane styleClass="restoreTab" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.gda.pg.eti.autyzm.Controller.RestoreController">
 
-            <top>
-                <HBox styleClass="deviceArea">
-                    <Button onAction="#refreshView">
-                        <graphic>
-                            <ImageView fitHeight="20.0" fitWidth="20.0">
-                                <Image url="images/refresh.png" />
-                            </ImageView>
-                        </graphic>
-                    </Button>
+    <top>
+        <HBox styleClass="deviceArea">
+            <Button onAction="#refreshView">
+                <graphic>
+                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                        <Image url="images/refresh.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-                    <TableView fx:id="devicesTableView">
-                        <columns>
-                            <TableColumn fx:id="chooseDeviceColumn" sortable="false" />
-                            <TableColumn fx:id="deviceNameColumn">
-                                <text><Strings fx:constant="DEVICES_COLUMN"/></text>
-                            </TableColumn>
-                        </columns>
-                    </TableView>
-                </HBox>
-            </top>
+            <TableView fx:id="devicesTableView">
+                <columns>
+                    <TableColumn fx:id="chooseDeviceColumn" sortable="false" />
+                    <TableColumn fx:id="deviceNameColumn">
+                        <text><Strings fx:constant="DEVICES_COLUMN"/></text>
+                    </TableColumn>
+                </columns>
+            </TableView>
+        </HBox>
+    </top>
 
-            <center>
-                <TableView fx:id="copiesTableView">
-                    <columns>
-                        <TableColumn fx:id="copyNameColumn">
-                            <text><Strings fx:constant="NAME_COLUMN"/></text>
-                        </TableColumn>
+    <center>
+        <TableView fx:id="copiesTableView">
+            <columns>
+                <TableColumn fx:id="copyNameColumn">
+                    <text><Strings fx:constant="NAME_COLUMN"/></text>
+                </TableColumn>
 
-                        <TableColumn  fx:id="copyCreateDateColumn">
-                            <text><Strings fx:constant="CREATION_DATE"/></text>
-                        </TableColumn>
+                <TableColumn  fx:id="copyCreateDateColumn">
+                    <text><Strings fx:constant="CREATION_DATE"/></text>
+                </TableColumn>
 
-                        <TableColumn fx:id="restoreCopyColumn"
-                                     styleClass="restoreActionColumn"
-                                     sortable="false" />
-                    </columns>
-                </TableView>
-            </center>
+                <TableColumn fx:id="restoreCopyColumn"
+                             styleClass="restoreActionColumn"
+                             sortable="false" />
+            </columns>
+        </TableView>
+    </center>
 
 </BorderPane>

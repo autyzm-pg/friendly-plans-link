@@ -33,8 +33,8 @@ public class App extends Application {
             }
         } catch (Exception exception) {
             Info.showAlert(
-                Strings.FAILED_TO_INIT_ADB_TITLE,
-                Strings.FAILED_TO_INIT_ADB_BODY,
+                    Strings.FAILED_TO_INIT_ADB_TITLE,
+                    Strings.FAILED_TO_INIT_ADB_BODY,
                     Alert.AlertType.ERROR
             );
         }

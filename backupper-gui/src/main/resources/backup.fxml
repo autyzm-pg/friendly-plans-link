@@ -9,6 +9,7 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <BorderPane styleClass="restoreTab" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.gda.pg.eti.autyzm.Controller.BackupController">
     <top>
@@ -46,23 +47,3 @@
         </HBox>
     </center>
 </BorderPane>
-
-
-
-<!-- <center>
-    <TableView fx:id="copiesTableView">
-        <columns>
-            <TableColumn fx:id="copyNameColumn">
-                <text><Strings fx:constant="NAME_COLUMN"/></text>
-            </TableColumn>
-
-            <TableColumn  fx:id="copyCreateDateColumn">
-                <text><Strings fx:constant="CREATION_DATE"/></text>
-            </TableColumn>
-
-            <TableColumn fx:id="restoreCopyColumn"
-                         styleClass="restoreActionColumn"
-                         sortable="false" />
-        </columns>
-    </TableView>
-</center> -->
