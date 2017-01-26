@@ -16,6 +16,7 @@ import pl.gda.pg.eti.autyzm.backupper.core.FileRestorer;
 import se.vidstige.jadb.JadbDevice;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -126,7 +127,19 @@ public class RestoreController extends BaseController {
                 if (selectedDevice != null) {
                     String backupName = copiesTableView.getItems().get(this.getIndex()).getName();
                     Restorer restorer = new FileRestorer();
-                    restorer.restoreBackupToDevice(backupName, selectedDevice);
+
+                    try {
+                        restorer.restoreBackupToDevice(backupName, selectedDevice);
+                    } catch (IOException e) {
+                        Info.showAlert(
+                                StringConfig.COPY_RESTORATION_FAILED_TITLE,
+                                StringConfig.COPY_RESTORATION_FAILED_BODY + e.getMessage(),
+                                StringConfig.COPY_RESTORATION_FAILED,
+                                Alert.AlertType.WARNING
+                        );
+
+                        return;
+                    }
 
                     Info.showAlert(
                             StringConfig.COPY_RESTORED_ALERT_TITLE,

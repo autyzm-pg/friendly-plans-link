@@ -20,6 +20,10 @@ public class StringConfig {
     public static final String FILED_TO_INIT_ADB_HEADER = "Błąd uruchomienia serwera ADB";
     public static final String FILED_TO_INIT_ADB_BODY = "Nie można uruchomić serwera ADB. Skontaktuj się z twórcą oprogramowania.";
 
+    public static final String COPY_RESTORATION_FAILED = "Błąd przywracania";
+    public static final String COPY_RESTORATION_FAILED_TITLE = "Błąd przywracania kopii";
+    public static final String COPY_RESTORATION_FAILED_BODY = "Nie udało się przywrócić kopii - ";
+
     @FXML public static final String MAKE_BACKUP = "Zrób kopię";
     @FXML public static final String REFRESH_COPY = "Przywróć kopię";
     @FXML public static final String NAME_COLUMN = "Nazwa";

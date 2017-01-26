@@ -12,6 +12,7 @@ public class Info {
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
+        alert.setResizable(true);
         alert.showAndWait();
     }
 }
