@@ -18,10 +18,13 @@ public class FileRestorer implements Restorer {
     public void restoreBackupToDevice(String backupName, JadbDevice device) throws IOException {
         try {
             device.push(FileBackupper.getBackupDatabase(backupName), new RemoteFile(Config.PATH_TO_DB));
-            restoreAssetsToDevice(backupName, device);
         } catch (IOException | JadbException e) {
             throw new IOException("Failed to restore the app database to the device.", e);
         }
+
+        // If the database restored successfully, we can now try restoring the assets!
+        // Any exceptions thrown in this method should be sent to the controller, NOT handled here.
+        restoreAssetsToDevice(backupName, device);
     }
 
     private void restoreAssetsToDevice(String backupName, JadbDevice device) throws IOException {
@@ -38,7 +41,7 @@ public class FileRestorer implements Restorer {
             try {
                 device.push(pathToAssetOnPC, assetOnAndroid);
             } catch (IOException | JadbException e) {
-                throw new IOException("Failed to push assets to the device. (" + assetOnAndroid.getPath() + ")", e);
+                throw new IOException("Failed to push assets to the device. (File: " + pathToAssetOnPC.getName() + ")", e);
             }
         }
     }

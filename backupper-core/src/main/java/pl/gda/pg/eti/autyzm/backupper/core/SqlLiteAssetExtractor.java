@@ -41,13 +41,13 @@ public class SqlLiteAssetExtractor implements AssetExtractor<File> {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            throw new BackupperException("Failed to initialize the SQLite JDBC Driver", e);
+            throw new BackupperException("Failed to initialize the SQLite JDBC Driver.", e);
         }
     }
 
     @Override
     public List<URI> extractAssets(File dbFile) {
-        Objects.requireNonNull(dbFile, "dbFile arg is null");
+        Objects.requireNonNull(dbFile, "The dbFile argument is null.");
 
         try {
             Connection dbConn = getDatabaseConnection(dbFile);
@@ -59,10 +59,6 @@ public class SqlLiteAssetExtractor implements AssetExtractor<File> {
                         ASSET_TABLES_COLUMNS[i][1]);
             }
 
-            // Collection<URI> activityMedia = extractPaths(dbConn, ACTIVITY_TABLE_NAME, ACTIVITY_COLUMN_NAMES);
-            // Collection<URI> actionMedia = extractPaths(dbConn, ACTION_TABLE_NAME, ACTION_COLUMN_NAMES);
-            // Collection<URI> settingsMedia = extractPaths(dbConn, SETTINGS_TABLE_NAME, SETTINGS_COLUMN_NAMES);
-
             dbConn.close();
 
             return Stream.of(mediaURIs)
@@ -70,7 +66,7 @@ public class SqlLiteAssetExtractor implements AssetExtractor<File> {
                     .distinct()
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            throw new AssetExtractorException("Failed to extract assets", e);
+            throw new AssetExtractorException("Failed to extract assets.", e);
         }
     }
 
@@ -108,16 +104,16 @@ public class SqlLiteAssetExtractor implements AssetExtractor<File> {
                     try {
                         dbConn.rollback();
                     } catch (SQLException ex2) {
-                        throw new AssetExtractorException("Failed to update database and rollback, database might be damaged");
+                        throw new AssetExtractorException("Failed to update database and rollback, database might be damaged.");
                     }
 
-                    throw new AssetExtractorException("Failed to update database (rolled back changes)", ex1);
+                    throw new AssetExtractorException("Failed to update database (rolled back changes).", ex1);
                 }
             }
 
             dbConn.close();
         } catch (Exception e) {
-            throw new AssetExtractorException("Failed to update database", e);
+            throw new AssetExtractorException("Failed to update the database.", e);
         }
     }
 
@@ -138,14 +134,14 @@ public class SqlLiteAssetExtractor implements AssetExtractor<File> {
         Collection<URI> paths = new LinkedList<>();
         Statement stmt = dbConnection.createStatement();
 
-        ResultSet resultSet = stmt.executeQuery("Select " + sourceColumn + " from " + tableName);
+        ResultSet resultSet = stmt.executeQuery("SELECT " + sourceColumn + " FROM " + tableName);
         while (resultSet.next()) {
             String path = resultSet.getString(sourceColumn);
             if (path != null && path.length() > 0) {
                 try {
                     paths.add(new URI(path));
                 } catch (URISyntaxException e) {
-                    throw new AssetExtractorException("Bad path found", e);
+                    throw new AssetExtractorException("Bad path found.", e);
                 }
             }
         }

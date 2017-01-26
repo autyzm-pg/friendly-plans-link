@@ -9,7 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import pl.gda.pg.eti.autyzm.Config;
 import pl.gda.pg.eti.autyzm.Info;
-import pl.gda.pg.eti.autyzm.StringConfig;
+import pl.gda.pg.eti.autyzm.Strings;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.core.FileBackupper;
 import se.vidstige.jadb.JadbDevice;
@@ -54,8 +54,8 @@ public class BackupController extends BaseController {
         List<JadbDevice> devices = getConnectedDevices();
 
         if (devices.isEmpty() && !appStart) {
-            Info.showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
-                    null, Alert.AlertType.WARNING);
+            Info.showAlert(Strings.NO_CONNECTED_DEVICE_ALERT_TITLE, Strings.NO_CONNECTED_DEVICE_ALERT_BODY,
+                    Alert.AlertType.WARNING);
         }
 
         updateDevices(devices);
@@ -76,46 +76,58 @@ public class BackupController extends BaseController {
     }
 
     private class BackupButtonCell extends TableCell<JadbDevice, Boolean> {
-        final Button backupButtonCell = new Button(StringConfig.MAKE_BACKUP);
+        final Button backupButtonCell = new Button(Strings.MAKE_BACKUP);
 
         BackupButtonCell() {
             backupButtonCell.setOnAction(action -> {
-                try {
-                    if (!nameInput.getText().isEmpty()) {
-                        // TODO Check if copy already exists
-                        JadbDevice selectedDevice = devices.get(this.getIndex());
-                        backupper.makeBackup(nameInput.getText(), selectedDevice);
+                JadbDevice selectedDevice;
 
-                        Info.showAlert(
-                                StringConfig.BACKUP_CREATED_ALERT_TITLE,
-                                StringConfig.BACKUP_CREATED_ALERT_BODY,
-                                null,
-                                Alert.AlertType.INFORMATION
-                        );
-                    } else Info.showAlert(
-                            StringConfig.MISSING_FIELDS_ALERT_TITLE,
-                            StringConfig.MISSING_FIELDS_ALERT_BODY,
-                            null,
+                try {
+                    selectedDevice = devices.get(this.getIndex());
+                } catch (Exception e) {
+                    Info.showAlert(
+                            Strings.NO_CONNECTED_DEVICE_ALERT_TITLE,
+                            Strings.NO_CONNECTED_DEVICE_ALERT_BODY,
                             Alert.AlertType.WARNING
                     );
-                } catch (Exception ex) {
-                     Info.showAlert(
-                             StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE,
-                             StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
-                             null,
-                             Alert.AlertType.ERROR
-                     );
 
-                     updateDevices(new ArrayList<>());
+                    updateDevices(new ArrayList<>());
+                    return;
                 }
 
+                if (nameInput.getText().isEmpty()) {
+                    Info.showAlert(
+                            Strings.BACKUP_NAME_MISSING_TITLE,
+                            Strings.BACKUP_NAME_MISSING_BODY,
+                            Alert.AlertType.WARNING
+                    );
+
+                    return;
+                }
+
+                try {
+                    // TODO: Check if copy already exists
+                    backupper.makeBackup(nameInput.getText(), selectedDevice);
+
+                    Info.showAlert(
+                            Strings.BACKUP_CREATED_ALERT_TITLE,
+                            Strings.BACKUP_CREATED_ALERT_BODY,
+                            Alert.AlertType.INFORMATION
+                    );
+                } catch (Exception ex) {
+                    Info.showAlert(
+                            Strings.BACKUP_FAILED_ALERT_TITLE,
+                            Strings.BACKUP_FAILED_ALERT_BODY,
+                            Alert.AlertType.ERROR
+                    );
+                }
             });
         }
 
         @Override
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
-            if(!empty){
+            if (!empty) {
                 setGraphic(backupButtonCell);
             }
         }

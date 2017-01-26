@@ -2,7 +2,7 @@ package pl.gda.pg.eti.autyzm.Controller;
 
 import javafx.scene.control.Alert;
 import pl.gda.pg.eti.autyzm.Info;
-import pl.gda.pg.eti.autyzm.StringConfig;
+import pl.gda.pg.eti.autyzm.Strings;
 import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
 import se.vidstige.jadb.JadbDevice;
 import se.vidstige.jadb.JadbException;
@@ -16,8 +16,8 @@ abstract class BaseController {
         try {
             return AdbProxy.getConnectedDevices();
         } catch (IOException | JadbException e) {
-            Info.showAlert(StringConfig.LOOKING_FOR_DEVICES_ERROR_TITLE, StringConfig.LOOKING_FOR_DEVICES_ERROR_BODY,
-                    null, Alert.AlertType.ERROR);
+            Info.showAlert(Strings.LOOKING_FOR_DEVICES_ERROR_TITLE, Strings.LOOKING_FOR_DEVICES_ERROR_BODY,
+                    Alert.AlertType.ERROR);
             return new ArrayList<>();
         }
     }

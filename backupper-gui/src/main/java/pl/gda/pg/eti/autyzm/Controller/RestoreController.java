@@ -10,12 +10,13 @@ import javafx.scene.control.*;
 import pl.gda.pg.eti.autyzm.Config;
 import pl.gda.pg.eti.autyzm.DeviceCopy;
 import pl.gda.pg.eti.autyzm.Info;
-import pl.gda.pg.eti.autyzm.StringConfig;
+import pl.gda.pg.eti.autyzm.Strings;
 import pl.gda.pg.eti.autyzm.backupper.api.Restorer;
 import pl.gda.pg.eti.autyzm.backupper.core.FileRestorer;
 import se.vidstige.jadb.JadbDevice;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -72,8 +73,8 @@ public class RestoreController extends BaseController {
         devices.clear();
 
         if (connectedDevices.isEmpty() && !appStart) {
-            Info.showAlert(StringConfig.NO_CONNECTED_DEVICE_ALERT_TITLE, StringConfig.NO_CONNECTED_DEVICE_ALERT_BODY,
-                    null, Alert.AlertType.WARNING);
+            Info.showAlert(Strings.NO_CONNECTED_DEVICE_ALERT_TITLE, Strings.NO_CONNECTED_DEVICE_ALERT_BODY,
+                    Alert.AlertType.WARNING);
         } else devices.addAll(connectedDevices);
 
         devicesTableView.refresh();
@@ -107,7 +108,9 @@ public class RestoreController extends BaseController {
     private void populate() {
         Path pathToDataDirectory = Paths.get(".", CURRENT_DIRECTORY_NAME);
         File dataDirectory = new File(pathToDataDirectory.toString());
-        String[] copiesNames = dataDirectory.list();
+
+        // Filter out directories only, per http://stackoverflow.com/a/5125258/1044061
+        String[] copiesNames = dataDirectory.list((current, name) -> new File(current, name).isDirectory());
         copies.clear();
 
         if (copiesNames != null) {
@@ -120,38 +123,39 @@ public class RestoreController extends BaseController {
     }
 
     private class RestoreButtonCell extends TableCell<DeviceCopy, Boolean> {
-        final Button restoreButton = new Button(StringConfig.REFRESH_BUTTON);
+        final Button restoreButton = new Button(Strings.RESTORE_BUTTON);
 
-        RestoreButtonCell(){
+        RestoreButtonCell() {
             restoreButton.setOnAction(action -> {
-                if (selectedDevice != null) {
-                    String backupName = copiesTableView.getItems().get(this.getIndex()).getName();
-                    Restorer restorer = new FileRestorer();
-
-                    try {
-                        restorer.restoreBackupToDevice(backupName, selectedDevice);
-                    } catch (IOException e) {
-                        Info.showAlert(
-                                StringConfig.COPY_RESTORATION_FAILED_TITLE,
-                                StringConfig.COPY_RESTORATION_FAILED_BODY + e.getMessage(),
-                                StringConfig.COPY_RESTORATION_FAILED,
-                                Alert.AlertType.WARNING
-                        );
-
-                        return;
-                    }
-
+                if (selectedDevice == null) {
                     Info.showAlert(
-                            StringConfig.COPY_RESTORED_ALERT_TITLE,
-                            StringConfig.COPY_RESTORED_ALERT_BODY,
-                            null,
-                            Alert.AlertType.INFORMATION
+                            Strings.DEVICE_NOT_SELECTED_ALERT_TITLE,
+                            Strings.DEVICE_NOT_SELECTED_ALERT_BODY,
+                            Alert.AlertType.WARNING
                     );
-                } else Info.showAlert(
-                        StringConfig.MISSING_FIELDS_ALERT_TITLE,
-                        StringConfig.MISSING_FIELDS_ALERT_BODY,
-                        null,
-                        Alert.AlertType.WARNING
+
+                    return;
+                }
+
+                String backupName = copiesTableView.getItems().get(this.getIndex()).getName();
+                Restorer restorer = new FileRestorer();
+
+                try {
+                    restorer.restoreBackupToDevice(backupName, selectedDevice);
+                } catch (IOException e) {
+                    Info.showAlert(
+                            Strings.COPY_RESTORATION_FAILED_TITLE,
+                            Strings.COPY_RESTORATION_FAILED_BODY + e.getMessage(),
+                            Alert.AlertType.ERROR
+                    );
+
+                    return;
+                }
+
+                Info.showAlert(
+                        Strings.COPY_RESTORED_ALERT_TITLE,
+                        Strings.COPY_RESTORED_ALERT_BODY,
+                        Alert.AlertType.INFORMATION
                 );
             });
         }
@@ -177,7 +181,7 @@ public class RestoreController extends BaseController {
         @Override
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
-            if(!empty){
+            if (!empty) {
                 setGraphic(chooseDeviceRadioBox);
             }
         }

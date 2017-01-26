@@ -33,16 +33,15 @@ public class App extends Application {
             }
         } catch (Exception exception) {
             Info.showAlert(
-                StringConfig.FILED_TO_INIT_ADB_HEADER,
-                StringConfig.FILED_TO_INIT_ADB_BODY,
-                null,
-                Alert.AlertType.ERROR
+                Strings.FAILED_TO_INIT_ADB_TITLE,
+                Strings.FAILED_TO_INIT_ADB_BODY,
+                    Alert.AlertType.ERROR
             );
         }
 
         Parent root = FXMLLoader.load(getClass().getResource(Config.MAIN_FXML_PATH));
         primaryStage.getIcons().add(new Image(Config.LOGO_PATH));
-        primaryStage.setTitle(StringConfig.APP_NAME);
+        primaryStage.setTitle(Strings.APP_NAME);
         primaryStage.setScene(new Scene(root, Config.SCENE_WIDTH, Config.SCENE_HEIGHT));
         primaryStage.show();
     }
