@@ -30,7 +30,7 @@ public class FileBackupper implements Backupper {
     @Override
     public void makeBackup(String backupName, JadbDevice device) throws BackupperException {
         try {
-            // This should never break, but people have silly Java installations, occasionally.
+            // This should never break, but certain (older) Java installations may not support this.
             // Check if we can initialize the hasher first. (HashingUtils will break terribly otherwise.)
             MessageDigest md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {

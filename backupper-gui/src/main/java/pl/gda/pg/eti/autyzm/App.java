@@ -17,16 +17,17 @@ public class App extends Application {
         try {
             switch (OperatingSystemUtils.getOperatingSystem()) {
                 case WINDOWS:
+                case MAC:
                     String directorySeparator = FileSystems.getDefault().getSeparator();
                     String pathToLocalAdb = System.getProperty("user.dir") + directorySeparator + "adb";
                     Runtime.getRuntime().exec(pathToLocalAdb + " start-server");
                     break;
-                case MAC:
+
                 case LINUX:
-                    // On Linux/macOS you usually want to just start the ADB binary available
-                    // in PATH (installed by system's package manager/Homebrew/etc).
+                    // On Linux, ADB should be installed globally (in /usr/bin, with udev rules, etc).
                     Runtime.getRuntime().exec("adb start-server");
                     break;
+
                 case OTHER:
                 default:
                     throw new Exception("Unsupported operating system.");

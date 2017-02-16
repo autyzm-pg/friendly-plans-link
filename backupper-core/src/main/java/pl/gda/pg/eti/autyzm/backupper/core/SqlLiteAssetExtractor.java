@@ -12,13 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// Everything in -core implements APIs from -api.
-
-// Can someone please explain why the hell is this even needed? It's nice to put
-// everything behind interfaces when it's cleanly decoupled and all... just that
-// there'll never be 2 implementations of those interfaces, therefore there's no
-// point in creating these in the first place. :|
-
 public class SqlLiteAssetExtractor implements AssetExtractor<File> {
     private static final String[][] ASSET_TABLES_COLUMNS = {
             {"AKTYWNOSC", "ICONPATH"},
@@ -27,15 +20,6 @@ public class SqlLiteAssetExtractor implements AssetExtractor<File> {
             {"CZYNNOSC", "OBRAZEK"},
             {"USTAWIENIA_UZYTKOWNIKA", "TIMER_SOUND_PATH"}
     };
-
-    //private static final String ACTIVITY_TABLE_NAME = "AKTYWNOSC";
-    //private static final String[] ACTIVITY_COLUMN_NAMES = {"ICONPATH", "AUDIOPATH"};
-
-    //private static final String ACTION_TABLE_NAME = "CZYNNOSC";
-    //private static final String[] ACTION_COLUMN_NAMES = {"AUDIO", "OBRAZEK"};
-
-    //private static final String SETTINGS_TABLE_NAME = "USTAWIENIA_UZYTKOWNIKA";
-    //private static final String[] SETTINGS_COLUMN_NAMES = {"TIMER_SOUND_PATH"};
 
     static {
         try {
@@ -88,7 +72,6 @@ public class SqlLiteAssetExtractor implements AssetExtractor<File> {
 
                     for (Map.Entry<URI, String> entry : stringsToReplace.entrySet()) {
                         // This is where all assets will be uploaded to from now on.
-
                         String replacement = "/storage/sdcard0/FriendlyPlans/LegacyAssets/" + entry.getValue();
                         stmt.addBatch(
                                 "UPDATE " + AssetTableColumnPair[0] +
