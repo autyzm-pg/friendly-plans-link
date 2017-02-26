@@ -11,7 +11,7 @@
     <artifactId>backupper-gui</artifactId>
     <packaging>jar</packaging>
 
-    <name>backupper-api</name>
+    <name>backupper-gui</name>
 
     <dependencies>
         <dependency>

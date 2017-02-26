@@ -9,12 +9,14 @@ import se.vidstige.jadb.JadbException;
 import se.vidstige.jadb.RemoteFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 public class FileBackupper implements Backupper {
     private static final File DATA_FOLDER = new File("data");
@@ -28,10 +30,20 @@ public class FileBackupper implements Backupper {
     @Override
     public void makeBackup(String backupName, JadbDevice device) throws BackupperException {
         try {
+            // This should never break, but certain (older) Java installations may not support this.
+            // Check if we can initialize the hasher first. (HashingUtils will break terribly otherwise.)
+            MessageDigest md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new BackupperException("The Java version you're running doesn't support MD5 hashing and cannot create backups.");
+        }
+
+        try {
             createBackupFolder(backupName);
             copyDbFromDevice(device, Config.PATH_TO_DB, backupName);
             copyAssetsFromDevice(device, backupName);
         } catch (IOException e) {
+            throw new BackupperException(e);
+        } catch (Exception e) {
             throw new BackupperException(e);
         }
     }
@@ -46,7 +58,7 @@ public class FileBackupper implements Backupper {
         return null;
     }
 
-    public static File getBackupDatabase(String backupName) {
+    static File getBackupDatabase(String backupName) {
         return new File(DATA_FOLDER, backupName + File.separator + "commments2.db");
     }
 
@@ -54,7 +66,7 @@ public class FileBackupper implements Backupper {
      * Creates new backup folder in {@link FileBackupper#DATA_FOLDER}.
      *
      * @param backupName name of backup directory - alias for backup
-     * @throws IOException
+     * @throws IOException on directory creation failure
      */
     private void createBackupFolder(String backupName) throws IOException {
         new File(DATA_FOLDER, backupName).mkdir();
@@ -81,23 +93,46 @@ public class FileBackupper implements Backupper {
         }
     }
 
-    private void copyAssetsFromDevice(JadbDevice device, String backupName) throws IOException {
-
+    private void copyAssetsFromDevice(JadbDevice device, String backupName) throws Exception {
         File fullPath = new File(DATA_FOLDER, backupName + File.separator + Config.DB_NAME);
 
-        SqlLiteAssertExtractor assertExtractor = new SqlLiteAssertExtractor();
-        List<URI> uriList = assertExtractor.extractAsserts(fullPath);
-        for (URI item : uriList) {
+        SqlLiteAssetExtractor assetExtractor = new SqlLiteAssetExtractor();
+        List<URI> uriList = assetExtractor.extractAssets(fullPath);
+        Map<URI, String> replacementMap = new HashMap<URI, String>();
 
-            String assetName = FilenameUtils.getName(item.getPath());
-            RemoteFile assetOnAndroid = new RemoteFile(item.getPath().replace("emulated/0","sdcard0"));
-            File pathToAssetOnPC = new File(DATA_FOLDER, backupName + File.separator + assetName);
+        for (URI item : uriList) {
+            RemoteFile remoteAsset = new RemoteFile(item.getPath().replace("emulated/0","sdcard0"));
+            File localAsset = new File(DATA_FOLDER, backupName + File.separator + "tmpfile");
+
             try {
-                device.pull(assetOnAndroid, pathToAssetOnPC);
+                device.pull(remoteAsset, localAsset);
             } catch (IOException | JadbException e) {
-                throw new IOException("Failed to pull assets from device", e);
+                throw new Exception("Failed to pull an asset from the device!", e);
             }
 
+            // The pulled file will be called "tmpfile". Calculate the hash and rename
+            // the file properly. (If the target file + extension already exists, delete tmpfile.)
+            String checksum = HashingUtils.getChecksumMD5(localAsset);
+            String resultName = checksum + '.' + FilenameUtils.getExtension(FilenameUtils.getName(item.getPath()));
+
+            try {
+                // Try to rename our tmpfile.
+                if (!localAsset.renameTo(new File(DATA_FOLDER, backupName + File.separator + resultName))) {
+                    // The target file already exists or something non-fatal. The tmpfile is useless,
+                    // but this is actually expected to be common.
+                    localAsset.delete();
+                }
+            } catch (Exception e) {
+                // If this fails, something bad happened (security/null pointer exception). The tmpfile
+                // is pretty much useless for us at this point, notify someone the backup failed.
+                throw new Exception("Failed to prepare files downloaded from the device!");
+            }
+
+            // Create a mapping between the extracted URI and the resulting name.
+            replacementMap.put(item, resultName);
         }
+
+        // Patch the database to keep the resulting names only, instead of the full file paths.
+        assetExtractor.replaceAssetURIs(fullPath, replacementMap);
     }
 }

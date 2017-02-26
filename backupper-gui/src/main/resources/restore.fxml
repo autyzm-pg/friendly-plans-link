@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
-<?import pl.gda.pg.eti.autyzm.StringConfig?>
+<?import pl.gda.pg.eti.autyzm.Strings?>
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <BorderPane styleClass="restoreTab" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.gda.pg.eti.autyzm.Controller.RestoreController">
 
-            <top>
-                <HBox styleClass="deviceArea">
+    <top>
+        <HBox styleClass="deviceArea">
+            <Button onAction="#refreshView">
+                <graphic>
+                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                        <Image url="images/refresh.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-                    <Button onAction="#refreshView">
-                        <graphic>
-                            <ImageView fitHeight="20.0" fitWidth="20.0">
-                                <image>
-                                    <Image url="images/refresh.png" />
-                                </image>
-                            </ImageView>
-                        </graphic>
-                    </Button>
+            <TableView fx:id="devicesTableView">
+                <columns>
+                    <TableColumn fx:id="chooseDeviceColumn" sortable="false" />
+                    <TableColumn fx:id="deviceNameColumn">
+                        <text><Strings fx:constant="DEVICES_COLUMN"/></text>
+                    </TableColumn>
+                </columns>
+            </TableView>
+        </HBox>
+    </top>
 
-                    <TableView fx:id="devicesTableView">
-                        <columns>
-                            <TableColumn fx:id="deviceNameColumn">
-                                <text>
-                                    <StringConfig fx:constant="DEVICE_COLUMN"/>
-                                </text>
-                            </TableColumn>
-                            <TableColumn fx:id="chooseDeviceColumn" sortable="false">
-                            </TableColumn>
-                        </columns>
-                    </TableView>
-                </HBox>
-            </top>
-            <center>
-                <TableView fx:id="copiesTableView">
-                    <columns>
-                        <TableColumn fx:id="copyNameColumn">
-                            <text>
-                                <StringConfig fx:constant="NAME_COLUMN"/>
-                            </text>
-                        </TableColumn>
-                        <TableColumn  fx:id="copyCreateDateColumn">
-                            <text>
-                                <StringConfig fx:constant="CREATE_DATE_COLUMN"/>
-                            </text>
-                        </TableColumn>
-                        <TableColumn fx:id="restoreCopyColumn" styleClass="restoreActionColumn"
-                                     sortable="false">
-                        </TableColumn>
-                    </columns>
-                </TableView>
-            </center>
+    <center>
+        <TableView fx:id="copiesTableView">
+            <columns>
+                <TableColumn fx:id="copyNameColumn">
+                    <text><Strings fx:constant="NAME_COLUMN"/></text>
+                </TableColumn>
+
+                <TableColumn  fx:id="copyCreateDateColumn">
+                    <text><Strings fx:constant="CREATION_DATE"/></text>
+                </TableColumn>
+
+                <TableColumn fx:id="restoreCopyColumn"
+                             styleClass="restoreActionColumn"
+                             sortable="false" />
+            </columns>
+        </TableView>
+    </center>
 
 </BorderPane>

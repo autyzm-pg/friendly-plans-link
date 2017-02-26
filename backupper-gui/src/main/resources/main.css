@@ -9,7 +9,18 @@
     -fx-padding: 30px;
 }
 
+.centerElements {
+    -fx-alignment: center;
+}
+
+.backupDevicesRefreshButton {
+    -fx-margin: 40px;
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}
+
 .backupNameInputArea {
+    -fx-fit-to-width: true;
     -fx-margin: 30px ;
     -fx-padding: 10px;
 }

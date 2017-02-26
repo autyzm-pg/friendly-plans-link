@@ -4,29 +4,20 @@
 <?import javafx.scene.control.Tab?>
 <?import java.net.URL?>
 
-<?import pl.gda.pg.eti.autyzm.StringConfig?>
-<BorderPane styleClass="root" id="root" fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
+<?import pl.gda.pg.eti.autyzm.Strings?>
+<BorderPane styleClass="root" id="root" fx:id="root"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.gda.pg.eti.autyzm.Controller.MainController">
     <center>
         <TabPane>
-            <tabs>
-                <Tab closable="false">
-                    <text>
-                        <StringConfig fx:constant="MAKE_BACKUP"/>
-                    </text>
-                    <content>
-                        <fx:include source="backup.fxml"/>
-                    </content>
-                </Tab>
-                <Tab closable="false">
-                    <text>
-                        <StringConfig fx:constant="REFRESH_COPY"/>
-                    </text>
-                    <content>
-                        <fx:include source="restore.fxml"/>
-                    </content>
-                </Tab>
-            </tabs>
+            <Tab closable="false">
+                <text><Strings fx:constant="MAKE_BACKUP"/></text>
+                <fx:include source="backup.fxml"/>
+            </Tab>
+            <Tab closable="false">
+                <text><Strings fx:constant="REFRESH_COPY"/></text>
+                <fx:include source="restore.fxml"/>
+            </Tab>
         </TabPane>
     </center>
 
