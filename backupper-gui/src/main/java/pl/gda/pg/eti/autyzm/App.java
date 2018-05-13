@@ -17,6 +17,9 @@ public class App extends Application {
         try {
             switch (OperatingSystemUtils.getOperatingSystem()) {
                 case WINDOWS:
+                    Runtime.getRuntime().exec("adb start-server");
+                    break;
+                    
                 case MAC:
                     String directorySeparator = FileSystems.getDefault().getSeparator();
                     String pathToLocalAdb = System.getProperty("user.dir") + directorySeparator + "adb";

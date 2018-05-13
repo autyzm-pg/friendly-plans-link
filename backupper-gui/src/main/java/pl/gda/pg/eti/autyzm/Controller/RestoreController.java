@@ -109,8 +109,8 @@ public class RestoreController extends BaseController {
         Path pathToDataDirectory = Paths.get(".", CURRENT_DIRECTORY_NAME);
         File dataDirectory = new File(pathToDataDirectory.toString());
 
-        // Filter out directories only, per http://stackoverflow.com/a/5125258/1044061
-        String[] copiesNames = dataDirectory.list((current, name) -> new File(current, name).isDirectory());
+        // Filter out directories, per http://stackoverflow.com/a/5125258/1044061
+        String[] copiesNames = dataDirectory.list((current, name) -> (! new File(current, name).isDirectory()));
         copies.clear();
 
         if (copiesNames != null) {
