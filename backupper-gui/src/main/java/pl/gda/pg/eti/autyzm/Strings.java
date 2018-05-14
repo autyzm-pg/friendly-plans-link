@@ -5,11 +5,11 @@ import javafx.fxml.FXML;
 public class Strings {
     public static final String APP_NAME = "Plan Link";
 
-    public static final String BACKUP_CREATED_ALERT_TITLE = "Utworzono kopię";
-    public static final String BACKUP_CREATED_ALERT_BODY = "Utworzono kopię pomyślnie.";
+    public static final String BACKUP_CREATED_ALERT_TITLE = "Tworzenie kopii";
+    public static final String BACKUP_CREATED_ALERT_BODY = "Potwierdź utworzenie kopii na swoim tablecie.";
 
-    public static final String COPY_RESTORED_ALERT_TITLE = "Odtworzono kopię";
-    public static final String COPY_RESTORED_ALERT_BODY = "Odtworzono kopię pomyślnie.";
+    public static final String COPY_RESTORED_ALERT_TITLE = "Odtworzenie kopii";
+    public static final String COPY_RESTORED_ALERT_BODY = "Potwierdź odtworzenie kopii na swoim tablecie.";
 
     public static final String NO_CONNECTED_DEVICE_ALERT_TITLE = "Brak urządzenia";
     public static final String NO_CONNECTED_DEVICE_ALERT_BODY = "Nie wykryto żadnego urządzenia. Podłącz urządzenie do komputera (pamiętaj o włączeniu Trybu Debugowania).";

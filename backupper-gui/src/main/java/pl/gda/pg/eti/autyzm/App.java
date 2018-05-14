@@ -17,6 +17,7 @@ public class App extends Application {
         try {
             switch (OperatingSystemUtils.getOperatingSystem()) {
                 case WINDOWS:
+                    // environment variable PATH should be updated to contain directory with adb.exe 
                     Runtime.getRuntime().exec("adb start-server");
                     break;
                     

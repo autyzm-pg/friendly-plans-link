@@ -20,6 +20,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -115,7 +116,13 @@ public class RestoreController extends BaseController {
 
         if (copiesNames != null) {
             for (String copyName : copiesNames) {
-                copies.add(new DeviceCopy(copyName, null));
+                
+                String[] splittedCopyName = copyName.split("_", 2);
+                
+                LocalDate backupCreatedAt = LocalDate.parse(splittedCopyName[0]);
+                String backupName = splittedCopyName[1];
+                
+                copies.add(new DeviceCopy(backupName, backupCreatedAt));
             }
         }
 
@@ -138,10 +145,14 @@ public class RestoreController extends BaseController {
                 }
 
                 String backupName = copiesTableView.getItems().get(this.getIndex()).getName();
+                String backupCreatedAt = copiesTableView.getItems().get(this.getIndex()).getCreateDate().toString();
+                
+                String backupFileName = backupCreatedAt + "_" + backupName;
+                
                 Restorer restorer = new FileRestorer();
 
                 try {
-                    restorer.restoreBackupToDevice(backupName, selectedDevice);
+                    restorer.restoreBackupToDevice(backupFileName, selectedDevice);
                 } catch (IOException e) {
                     Info.showAlert(
                             Strings.COPY_RESTORATION_FAILED_TITLE,

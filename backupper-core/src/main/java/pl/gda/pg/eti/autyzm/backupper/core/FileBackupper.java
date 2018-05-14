@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,10 +34,12 @@ public class FileBackupper implements Backupper {
     @Override
     public void makeBackup(String backupName, JadbDevice device) throws BackupperException {
 
-        String backupPath = "data/" + backupName + ".ab";
+        LocalDate todayDate = LocalDate.now();
+        String backupPath = "data/" + todayDate + "_" + backupName + ".ab";
+        String backupCommand = "adb backup -f " + backupPath + " " + APPLICATION_PACKAGE_ON_DEVICE;
         
         try {       
-            Runtime.getRuntime().exec("adb backup -f " + backupPath + " " + APPLICATION_PACKAGE_ON_DEVICE);
+            Runtime.getRuntime().exec(backupCommand);
         } catch (IOException ex) {
             Logger.getLogger(FileBackupper.class.getName()).log(Level.SEVERE, null, ex);
         }       
