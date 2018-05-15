@@ -1,5 +1,6 @@
 package pl.gda.pg.eti.autyzm;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +10,12 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.nio.file.FileSystems;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import pl.gda.pg.eti.autyzm.Utils.*;
+import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
+import static pl.gda.pg.eti.autyzm.backupper.core.Config.APPLICATION_PACKAGE_ON_DEVICE;
 
 public class App extends Application {
     @Override
@@ -18,7 +24,12 @@ public class App extends Application {
             switch (OperatingSystemUtils.getOperatingSystem()) {
                 case WINDOWS:
                     // environment variable PATH should be updated to contain directory with adb.exe 
-                    Runtime.getRuntime().exec("adb start-server");
+                    
+                    checkIfCorrectAdbVersionIsInstalled();
+                    checkIfFriendlyPlansAreInstalled();
+                    //output = OperatingSystemUtils.execCmd("adb shell pm list packages " + APPLICATION_PACKAGE_ON_DEVICE);
+                    AdbProxy.execCmd("adb start-server");
+
                     break;
                     
                 case MAC:
@@ -36,7 +47,17 @@ public class App extends Application {
                 default:
                     throw new Exception("Unsupported operating system.");
             }
-        } catch (Exception exception) {
+        } 
+        catch (RuntimeException exception) {
+            Info.showAlert(
+                    Strings.FAILED_TO_INIT_ADB_TITLE,
+                    exception.getMessage(),
+                    Alert.AlertType.ERROR
+            );
+            
+            Platform.exit();
+        } 
+        catch (Exception exception) {
             Info.showAlert(
                     Strings.FAILED_TO_INIT_ADB_TITLE,
                     Strings.FAILED_TO_INIT_ADB_BODY,
@@ -54,4 +75,30 @@ public class App extends Application {
     public static void main (String[] args) {
         launch(args);
     }
+    
+    private void checkIfCorrectAdbVersionIsInstalled(){
+        
+        try {
+            String output = AdbProxy.execCmd("adb version");
+            
+            if(! output.equals("Android Debug Bridge version 1.0.31")){
+                throw new RuntimeException(Strings.WRONG_ADB_VERSION_INSTALLED);
+            }
+            
+        } catch (IOException ex) {
+            throw new RuntimeException(Strings.ADB_NOT_INSTALLED);
+        }
+        
+    }
+    
+    private void checkIfFriendlyPlansAreInstalled() throws IOException{
+        
+        String output = AdbProxy.execCmd("adb shell pm list packages " + APPLICATION_PACKAGE_ON_DEVICE);
+        
+        if(output.equals("")){
+            throw new RuntimeException(Strings.APPLICATION_NOT_INSTALLED);
+        }
+        
+    }
+                    
 }

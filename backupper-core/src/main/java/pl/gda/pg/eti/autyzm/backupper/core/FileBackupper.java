@@ -1,21 +1,12 @@
 package pl.gda.pg.eti.autyzm.backupper.core;
 
-import org.apache.commons.io.FilenameUtils;
 import pl.gda.pg.eti.autyzm.backupper.api.Backup;
 import pl.gda.pg.eti.autyzm.backupper.api.Backupper;
 import pl.gda.pg.eti.autyzm.backupper.api.BackupperException;
 import se.vidstige.jadb.JadbDevice;
-import se.vidstige.jadb.JadbException;
-import se.vidstige.jadb.RemoteFile;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
@@ -34,6 +25,7 @@ public class FileBackupper implements Backupper {
     @Override
     public void makeBackup(String backupName, JadbDevice device) throws BackupperException {
 
+        backupName = backupName.replace(" ", "_");
         LocalDate todayDate = LocalDate.now();
         String backupPath = "data/" + todayDate + "_" + backupName + ".ab";
         String backupCommand = "adb backup -f " + backupPath + " " + APPLICATION_PACKAGE_ON_DEVICE;

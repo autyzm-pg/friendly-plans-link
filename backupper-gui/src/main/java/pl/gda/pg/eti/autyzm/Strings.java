@@ -34,6 +34,10 @@ public class Strings {
 
     public static final String COPY_RESTORATION_FAILED_TITLE = "Błąd przywracania kopii";
     public static final String COPY_RESTORATION_FAILED_BODY = "Nie udało się przywrócić kopii - ";
+    
+    public static final String ADB_NOT_INSTALLED = "Nie znaleziono adb.exe na tym komputerze.";
+    public static final String WRONG_ADB_VERSION_INSTALLED = "Zainstalowano złą wersję adb.exe na tym komputerze. Potrzebna jest 1.0.31.";
+    public static final String APPLICATION_NOT_INSTALLED = "Przyjazne Plany nie są zainstalowane.";
 
     public static final String RESTORE_BUTTON = "Przywróć";
     @FXML public static final String MAKE_BACKUP = "Utwórz kopię";
