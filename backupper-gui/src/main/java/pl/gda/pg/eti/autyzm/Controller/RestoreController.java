@@ -16,7 +16,6 @@ import pl.gda.pg.eti.autyzm.backupper.core.FileRestorer;
 import se.vidstige.jadb.JadbDevice;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;

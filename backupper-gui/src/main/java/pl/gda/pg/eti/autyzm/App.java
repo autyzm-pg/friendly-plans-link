@@ -10,8 +10,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.nio.file.FileSystems;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import pl.gda.pg.eti.autyzm.Utils.*;
 import pl.gda.pg.eti.autyzm.backupper.core.AdbProxy;
@@ -25,9 +23,8 @@ public class App extends Application {
                 case WINDOWS:
                     // environment variable PATH should be updated to contain directory with adb.exe 
                     
-                    //checkIfCorrectAdbVersionIsInstalled();
-                    //checkIfFriendlyPlansAreInstalled();
-                    //output = OperatingSystemUtils.execCmd("adb shell pm list packages " + APPLICATION_PACKAGE_ON_DEVICE);
+                    checkIfCorrectAdbVersionIsInstalled();
+                    checkIfFriendlyPlansAreInstalled();
                     AdbProxy.execCmd("adb start-server");
 
                     break;
