@@ -22,24 +22,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import static pl.gda.pg.eti.autyzm.backupper.core.Config.BACKUP_DIRECTORY;
 
 
 public class RestoreController extends BaseController {
 
-    private static final double CREATE_DATE_COLUMN_WIDTH = 0.3;
+    private static final double CREATE_DATE_COLUMN_WIDTH = 0.25;
     private static final double RESTORE_COPY_COLUMN_WIDTH = 0.2;
-    private static final double NAME_COLUMN_WIDTH = 0.5;
+    private static final double DELETE_COPY_COLUMN_WIDTH = 0.15;
+    private static final double NAME_COLUMN_WIDTH = 0.4;
+    
 
     private static final double DEVICE_NAME_COLUMN_WIDTH = 0.9;
     private static final double CHOOSE_DEVICE_COLUMN_WIDTH = 0.1;
     private static final double MAX_TABLE_HEIGHT = 100.0;
 
-    private static final String CURRENT_DIRECTORY_NAME = "data";
 
     @FXML private TableView<DeviceCopy> copiesTableView;
     @FXML private TableColumn<DeviceCopy, String> copyNameColumn;
     @FXML private TableColumn<DeviceCopy, String> copyCreateDateColumn;
     @FXML private TableColumn<DeviceCopy, Boolean> restoreCopyColumn;
+    @FXML private TableColumn<DeviceCopy, Boolean> deleteCopyColumn;
 
     @FXML private TableView<JadbDevice> devicesTableView;
     @FXML private TableColumn<JadbDevice, String> deviceNameColumn;
@@ -88,6 +91,10 @@ public class RestoreController extends BaseController {
                 cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
         restoreCopyColumn.setCellFactory(
                 cellData -> new RestoreButtonCell());
+        deleteCopyColumn.setCellValueFactory(
+                cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
+        deleteCopyColumn.setCellFactory(
+                cellData -> new DeleteButtonCell());
         deviceNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSerial()));
         chooseDeviceColumn.setCellValueFactory(
                 cellData -> new SimpleBooleanProperty(cellData.getValue() != null));
@@ -99,7 +106,8 @@ public class RestoreController extends BaseController {
         copyNameColumn.prefWidthProperty().bind(copiesTableView.widthProperty().multiply(NAME_COLUMN_WIDTH));
         copyCreateDateColumn.prefWidthProperty().bind(copiesTableView.widthProperty().multiply(CREATE_DATE_COLUMN_WIDTH));
         restoreCopyColumn.prefWidthProperty().bind(copiesTableView.widthProperty().multiply(RESTORE_COPY_COLUMN_WIDTH));
-
+        deleteCopyColumn.prefWidthProperty().bind(copiesTableView.widthProperty().multiply(DELETE_COPY_COLUMN_WIDTH));
+        
         devicesTableView.setPrefWidth(Config.SCENE_WIDTH);
         deviceNameColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(DEVICE_NAME_COLUMN_WIDTH));
         chooseDeviceColumn.prefWidthProperty().bind(devicesTableView.widthProperty().multiply(CHOOSE_DEVICE_COLUMN_WIDTH));
@@ -107,7 +115,7 @@ public class RestoreController extends BaseController {
     }
 
     private void populate() {
-        Path pathToDataDirectory = Paths.get(".", CURRENT_DIRECTORY_NAME);
+        Path pathToDataDirectory = Paths.get(".", BACKUP_DIRECTORY);
         File dataDirectory = new File(pathToDataDirectory.toString());
 
         // Filter out directories, per http://stackoverflow.com/a/5125258/1044061
@@ -170,12 +178,39 @@ public class RestoreController extends BaseController {
                 );
             });
         }
+        
 
         @Override
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
             if(!empty){
                 setGraphic(restoreButton);
+            }
+        }
+    }
+    
+    private class DeleteButtonCell extends TableCell<DeviceCopy, Boolean> {
+        final Button deleteButton = new Button(Strings.DELETE_BUTTON);
+
+        DeleteButtonCell() {
+            deleteButton.setOnAction(action -> {
+
+                String backupName = copiesTableView.getItems().get(this.getIndex()).getName();
+                String backupCreatedAt = copiesTableView.getItems().get(this.getIndex()).getCreateDate().toString();
+                
+                String backupFileName = backupCreatedAt + "_" + backupName;
+                
+                new File(BACKUP_DIRECTORY, backupFileName).delete(); 
+                populate();
+            });
+        }
+        
+
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if(!empty){
+                setGraphic(deleteButton);
             }
         }
     }

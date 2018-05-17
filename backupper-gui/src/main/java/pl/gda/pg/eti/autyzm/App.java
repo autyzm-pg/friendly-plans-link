@@ -25,8 +25,8 @@ public class App extends Application {
                 case WINDOWS:
                     // environment variable PATH should be updated to contain directory with adb.exe 
                     
-                    checkIfCorrectAdbVersionIsInstalled();
-                    checkIfFriendlyPlansAreInstalled();
+                    //checkIfCorrectAdbVersionIsInstalled();
+                    //checkIfFriendlyPlansAreInstalled();
                     //output = OperatingSystemUtils.execCmd("adb shell pm list packages " + APPLICATION_PACKAGE_ON_DEVICE);
                     AdbProxy.execCmd("adb start-server");
 

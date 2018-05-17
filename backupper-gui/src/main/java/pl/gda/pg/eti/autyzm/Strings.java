@@ -40,6 +40,7 @@ public class Strings {
     public static final String APPLICATION_NOT_INSTALLED = "Przyjazne Plany nie są zainstalowane.";
 
     public static final String RESTORE_BUTTON = "Przywróć";
+    public static final String DELETE_BUTTON = "Usuń";
     @FXML public static final String MAKE_BACKUP = "Utwórz kopię";
     @FXML public static final String REFRESH_COPY = "Przywróć kopię";
     @FXML public static final String NAME_COLUMN = "Nazwa";
