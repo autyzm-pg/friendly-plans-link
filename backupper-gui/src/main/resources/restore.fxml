@@ -47,6 +47,10 @@
                 <TableColumn fx:id="restoreCopyColumn"
                              styleClass="restoreActionColumn"
                              sortable="false" />
+                
+                <TableColumn fx:id="deleteCopyColumn"
+                             styleClass="restoreActionColumn"
+                             sortable="false" />
             </columns>
         </TableView>
     </center>
